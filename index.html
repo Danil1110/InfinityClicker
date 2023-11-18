@@ -6,10 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infinity Clicker</title>
-    <!-- Add the link to the font here -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <style>
-        /* Use the 'Roboto' font in your styles */
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -79,6 +77,58 @@
             border: 1px solid #000;
             border-radius: 5px;
         }
+
+        #shop-button {
+            margin-top: 20px;
+            padding: 10px;
+            background: linear-gradient(to right top, #4CAF50, #00FF00);
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        #shop-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 500px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #close-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+
+        .shop-item {
+            margin: 10px 0;
+        }
+
+        .buy-button {
+            padding: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #shop-text {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #000;
+        }
     </style>
 </head>
 
@@ -93,6 +143,23 @@
             </div>
         </div>
         <div id="reset-button" onclick="resetGame()">Reset</div>
+        <button id="shop-button" onclick="openShop()">Shop</button>
+        <div id="shop-modal">
+            <div id="close-button" onclick="closeShop()">⤫</div>
+            <div class="shop-item">
+                <div>Click Upgrade (+2 per click)</div>
+                <div>Cost: 10 coins</div>
+                <button class="buy-button" onclick="buyClickUpgrade()">Buy</button>
+            </div>
+            <div class="shop-item">
+                <div>Charge Upgrade (consume 32 instead of 34)</div>
+                <div>Cost: 10 coins</div>
+                <button class="buy-button" onclick="buyChargeUpgrade()">Buy</button>
+            </div>
+            <div id="shop-text">
+                This is the shop! Spend your coins wisely.
+            </div>
+        </div>
     </div>
 
     <script>
@@ -104,11 +171,13 @@
 
             let score = localStorage.getItem('score') || 0;
             let charge = localStorage.getItem('charge') || 1000;
+            let clickUpgrade = localStorage.getItem('clickUpgrade') || 1;
+            let chargeUpgrade = localStorage.getItem('chargeUpgrade') || 34;
 
             coinWrapper.addEventListener('click', () => {
-                if (charge >= 34) {
-                    score++;
-                    charge -= 34;
+                if (charge >= chargeUpgrade) {
+                    score += clickUpgrade;
+                    charge -= chargeUpgrade;
                     localStorage.setItem('score', score);
                     localStorage.setItem('charge', charge);
                     updateScore();
@@ -159,11 +228,52 @@
             updateProgressBar();
         });
 
+        document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) {
+                replenishCharge();
+            }
+        });
+
         function resetGame() {
             localStorage.removeItem('score');
             localStorage.removeItem('charge');
+            localStorage.removeItem('clickUpgrade');
+            localStorage.removeItem('chargeUpgrade');
             location.reload();
         }
+
+        const shopModal = document.getElementById('shop-modal');
+
+        window.openShop = () => {
+            shopModal.style.display = 'block';
+        };
+
+        window.closeShop = () => {
+            shopModal.style.display = 'none';
+        };
+
+        window.buyClickUpgrade = () => {
+            if (score >= 10) {
+                score -= 10;
+                clickUpgrade += 2;
+                localStorage.setItem('score', score);
+                localStorage.setItem('clickUpgrade', clickUpgrade);
+                updateScore();
+                updateProgressBar();
+            }
+        };
+
+        window.buyChargeUpgrade = () => {
+            if (score >= 10) {
+                score -= 10;
+                chargeUpgrade = 32;
+                localStorage.setItem('score', score);
+                localStorage.setItem('chargeUpgrade', chargeUpgrade);
+                updateScore();
+                updateProgressBar();
+            }
+        };
+
     </script>
 </body>
 
