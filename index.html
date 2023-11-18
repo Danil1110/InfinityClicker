@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Clicker</title>
+    <!-- Add the link to the font here -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        /* Use the 'Roboto' font in your styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #FFA500, #FF4500, #FFD700);
+        }
+
+        #clicker-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #score {
+            font-size: 36px;
+            margin-bottom: 20px;
+            margin-top: -60px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .coin-wrapper {
+            margin-top: 50px;
+            cursor: pointer;
+        }
+
+        #coin img {
+            width: 150px;
+            height: 150px;
+        }
+
+        #progress-container {
+            width: 80%;
+            max-width: 300px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        #progress-value {
+            height: 100%;
+            border-radius: 5px;
+            margin-top: 40px;
+            background: linear-gradient(to right, #FFC0CB, #FFD700);
+            transition: width 0.5s ease-in-out;
+            border: 1px solid #000;
+        }
+
+        #charge-label {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            color: white;
+            font-weight: bold;
+        }
+
+        #reset-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #fff;
+            color: #000;
+            cursor: pointer;
+            border: 1px solid #000;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="clicker-container">
+        <div id="score">0</div>
+        <div class="coin-wrapper" id="coin"><img src="INFTCOIN.png" alt="Coin"></div>
+        <div id="progress-container">
+            <div id="charge-label"> ⚡️ 1000/1000</div>
+            <div id="progress-bar">
+                <div id="progress-value"></div>
+            </div>
+        </div>
+        <div id="reset-button" onclick="resetGame()">Reset</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const coinWrapper = document.getElementById('coin');
+            const scoreDisplay = document.getElementById('score');
+            const progressBar = document.getElementById('progress-value');
+            const chargeLabel = document.getElementById('charge-label');
+
+            let score = localStorage.getItem('score') || 0;
+            let charge = localStorage.getItem('charge') || 1000;
+
+            coinWrapper.addEventListener('click', () => {
+                if (charge >= 34) {
+                    score++;
+                    charge -= 34;
+                    localStorage.setItem('score', score);
+                    localStorage.setItem('charge', charge);
+                    updateScore();
+                    updateProgressBar();
+                    animateClick();
+                }
+            });
+
+            const updateScore = () => {
+                scoreDisplay.textContent = score;
+            };
+
+            const updateProgressBar = () => {
+                const progressPercentage = (charge / 1000) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+                chargeLabel.textContent = ` ⚡️${charge}/1000`;
+
+                if (charge === 0) {
+                    progressBar.style.backgroundColor = 'gray';
+                    progressBar.style.height = '0';
+                    progressBar.style.width = '0';
+                } else {
+                    progressBar.style.backgroundColor = 'linear-gradient(to right, #FFC0CB, #FFD700)';
+                    progressBar.style.height = '10px';
+                    progressBar.style.width = `${progressPercentage}%`;
+                }
+            };
+
+            const animateClick = () => {
+                progressBar.style.width = `${(charge / 1000) * 100}%`;
+            };
+
+            const replenishCharge = () => {
+                if (charge < 1000) {
+                    charge++;
+                    updateProgressBar();
+                    animateChargeReplenish();
+                }
+            };
+
+            const animateChargeReplenish = () => {
+                progressBar.style.width = `${(charge / 1000) * 100}%`;
+            };
+
+            setInterval(replenishCharge, 2000);
+
+            updateScore();
+            updateProgressBar();
+        });
+
+        function resetGame() {
+            localStorage.removeItem('score');
+            localStorage.removeItem('charge');
+            location.reload();
+        }
+    </script>
+</body>
+
+</html>
