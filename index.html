@@ -40,11 +40,11 @@
             height: 150px;
         }
 
-        #progress-container {
+         #progress-container {
             width: 80%;
             max-width: 300px;
             height: 10px;
-            margin-top: 20px;
+            margin-top: 150px; /* Increased from 60px to 100px to push down by 40px */
             position: relative;
             background-color: #fff;
             border-radius: 5px;
@@ -57,9 +57,10 @@
             transition: width 0.5s ease-in-out;
         }
 
+
         #charge-label {
             position: absolute;
-            top: -25px;
+            top: -25px; /* If it was -25px and you want to move it down by 40px, you add 40 to -25 */
             left: 0;
             color: white;
             font-weight: bold;
@@ -78,8 +79,8 @@
         }
 
         #shop-button {
-            margin-top: 20px;
-            padding: 15px 20px; /* Увеличение размера */
+            margin-top: 50px;
+            padding: 10px 30px; /* Увеличение размера */
             background: linear-gradient(to right top, #4CAF50, #00FF00);
             color: #fff;
             cursor: pointer;
@@ -161,7 +162,8 @@ let clickUpgradeCost = 100; // Первое улучшение клика от 1
 let chargeSpeed = parseInt(localStorage.getItem('chargeSpeed') || 2000);
 let chargeCapacity = parseInt(localStorage.getItem('chargeCapacity') || 1000);
 let chargeCapacityCost = 500; // Первая покупка улучшения ёмкости заряда от 500 монет
-let chargeIncrement = 3;
+let chargeIncrement = parseInt(localStorage.getItem('chargeIncrement') || 3); // Начальное значение или значение из localStorage
+
 
 const scoreDisplay = document.getElementById('score');
 const progressBar = document.getElementById('progress-value');
@@ -231,13 +233,19 @@ window.buyClickUpgrade = () => {
 };
 
 window.buyChargeSpeedUpgrade = () => {
-    if (score >= chargeUpgradeCost && charge >= 750) { // Требование минимального заряда для первой покупки
-        score -= chargeUpgradeCost;
-        chargeSpeed -= 500;
+    // Убедимся, что у игрока достаточно монет для покупки улучшения
+    if (score >= chargeUpgradeCost) {
+        score -= chargeUpgradeCost; // Вычитаем стоимость улучшения из счёта игрока
+        chargeIncrement += 2; // Увеличиваем скорость восстановления заряда на 2 единицы за раз
+
+        // Удваиваем стоимость следующего улучшения скорости перезарядки
         chargeUpgradeCost *= 2;
-        updateGame();
-        localStorage.setItem('chargeSpeed', chargeSpeed.toString());
+
+        // Сохраняем обновлённые значения в localStorage
+        localStorage.setItem('chargeIncrement', chargeIncrement.toString());
         localStorage.setItem('chargeUpgradeCost', chargeUpgradeCost.toString());
+
+        updateGame(); // Обновляем игру, чтобы отразить сделанные изменения
     }
 };
 
@@ -257,6 +265,3 @@ document.addEventListener('DOMContentLoaded', updateGame);
 </body>
 </html>
 
-</body>
-
-</html>
