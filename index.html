@@ -158,11 +158,12 @@
         }
 
         #coin img {
-            transition: transform 0.1s ease-out; /* Плавное возвращение к исходному состоянию */
+            transition: transform 0.1s ease-out; /* Плавный переход только для возвращения к исходному состоянию */
         }
         
         #coin img:active {
-            transform: scale(0.9); /* Мгновенное "продавливание" без задержки */
+            transform: scale(0.9); /* Уменьшает масштаб до 90% при нажатии */
+            transition: none; /* Убирает плавный переход при активном состоянии */
         }
         
         button, #coin img {
