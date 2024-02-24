@@ -17,6 +17,17 @@
         #coin img {
             -webkit-tap-highlight-color: transparent; /* Убирает подсветку при касании на iOS/Android */
         }
+
+        .coin-wrapper, #coin img {
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* для прозрачного цвета */
+            outline: none; /* Убирает контур вокруг элементов при нажатии */
+        }
+
+        #coin img:active {
+            transform: scale(0.9); /* Эффект "нажатия" */
+            transition: transform 0.1s; /* Плавный переход */
+        }
         
         body {
             font-family: 'Roboto', sans-serif;
