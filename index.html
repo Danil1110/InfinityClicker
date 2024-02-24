@@ -8,6 +8,13 @@
     <title>Infinity Clicker</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <style>
+        body, button, #coin img {
+            -webkit-user-select: none; /* Chrome/Safari/Opera */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Нестандартизированный, но широко поддерживаемый */
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -173,164 +180,117 @@
         </div>
     </div>
 <script>
-let score = parseInt(localStorage.getItem('score') || 0);
-let charge = parseInt(localStorage.getItem('charge') || 1000);
-let clickUpgrade = parseInt(localStorage.getItem('clickUpgrade') || 1);
-let chargeUpgradeCost = parseInt(localStorage.getItem('chargeUpgradeCost') || 750); // Стоимость улучшения скорости зарядки
-let clickUpgradeCost = parseInt(localStorage.getItem('clickUpgradeCost') || 100); // Восстановление или начальное значение стоимости улучшения клика
-let chargeSpeed = parseInt(localStorage.getItem('chargeSpeed') || 2000);
-let chargeCapacity = parseInt(localStorage.getItem('chargeCapacity') || 1000);
-let chargeCapacityCost = parseInt(localStorage.getItem('chargeCapacityCost') || 500); // Восстановление или начальное значение стоимости улучшения ёмкости
-let chargeIncrement = parseInt(localStorage.getItem('chargeIncrement') || 7); // Начальное значение восстановления заряда
+document.addEventListener('DOMContentLoaded', function() {
+    let score = parseInt(localStorage.getItem('score') || '0');
+    let charge = parseInt(localStorage.getItem('charge') || '1000');
+    let clickUpgrade = parseInt(localStorage.getItem('clickUpgrade') || '1');
+    let chargeUpgradeCost = parseInt(localStorage.getItem('chargeUpgradeCost') || '750');
+    let clickUpgradeCost = parseInt(localStorage.getItem('clickUpgradeCost') || '100');
+    let chargeSpeed = parseInt(localStorage.getItem('chargeSpeed') || '2000');
+    let chargeCapacity = parseInt(localStorage.getItem('chargeCapacity') || '1000');
+    let chargeCapacityCost = parseInt(localStorage.getItem('chargeCapacityCost') || '500');
+    let chargeIncrement = parseInt(localStorage.getItem('chargeIncrement') || '7');
 
-// Получение элементов пользовательского интерфейса
-const scoreDisplay = document.getElementById('score');
-const progressBar = document.getElementById('progress-value');
-const chargeLabel = document.getElementById('charge-label');
-const coinWrapper = document.getElementById('coin');
-const clickUpgradeCostDisplay = document.getElementById('clickUpgradeCost');
-const chargeSpeedCostDisplay = document.getElementById('chargeSpeedCost');
-const chargeCapacityCostDisplay = document.getElementById('chargeCapacityCost');
+    // Расчет восстановленной энергии при загрузке страницы
+    const lastUpdateTime = parseInt(localStorage.getItem('lastUpdateTime') || Date.now());
+    const currentTime = Date.now();
+    const timePassed = currentTime - lastUpdateTime;
+    const energyRecovered = Math.floor(timePassed / chargeSpeed) * chargeIncrement;
+    charge = Math.min(charge + energyRecovered, chargeCapacity);
 
-// Обработчик клика по монете
-coinWrapper.addEventListener('click', () => {
-    let costPerClick = clickUpgrade + 1; // Тратится на одну единицу больше, чем даёт за клик
-    if (charge >= costPerClick) {
-        score += clickUpgrade;
-        charge -= costPerClick;
-        updateGame();
-    }
-});
+    localStorage.setItem('lastUpdateTime', currentTime.toString());
 
-// Функция для обновления игры
-const updateGame = () => {
-    localStorage.setItem('score', score.toString());
-    localStorage.setItem('charge', charge.toString());
-    localStorage.setItem('clickUpgradeCost', clickUpgradeCost.toString()); // Сохранение стоимости улучшения клика
-    scoreDisplay.textContent = score;
-    clickUpgradeCostDisplay.textContent = clickUpgradeCost;
-    chargeSpeedCostDisplay.textContent = chargeUpgradeCost;
-    chargeCapacityCostDisplay.textContent = chargeCapacityCost;
-    updateProgressBar();
-};
+    const scoreDisplay = document.getElementById('score');
+    const progressBar = document.getElementById('progress-value');
+    const chargeLabel = document.getElementById('charge-label');
+    const coinWrapper = document.getElementById('coin');
 
-// Функция для обновления индикатора заряда
-const updateProgressBar = () => {
-    const progressPercentage = Math.min((charge / chargeCapacity) * 100, 100);
-    progressBar.style.width = `${progressPercentage}%`;
-    chargeLabel.textContent = `⚡️ ${charge}/${chargeCapacity}`;
-};
+    coinWrapper.addEventListener('click', function() {
+        let costPerClick = clickUpgrade + 1;
+        if (charge >= costPerClick) {
+            score += clickUpgrade;
+            charge -= costPerClick;
+            updateGame();
+        }
+    });
 
-// Функция для периодического восстановления заряда
-setInterval(() => {
-    if (charge < chargeCapacity) {
-        charge += chargeIncrement;
-        if (charge > chargeCapacity) charge = chargeCapacity;
+    function updateGame() {
+        localStorage.setItem('score', score.toString());
+        localStorage.setItem('charge', charge.toString());
+        localStorage.setItem('clickUpgradeCost', clickUpgradeCost.toString());
+        localStorage.setItem('lastUpdateTime', Date.now().toString());
+
+        scoreDisplay.textContent = score;
+        document.getElementById('clickUpgradeCost').textContent = clickUpgradeCost;
+        document.getElementById('chargeSpeedCost').textContent = chargeUpgradeCost;
+        document.getElementById('chargeCapacityCost').textContent = chargeCapacityCost;
+
         updateProgressBar();
     }
-}, chargeSpeed);
 
-// Функция для сброса игры
-function resetGame() {
-    localStorage.clear();
-    window.location.reload();
-}
-
-// Модальное окно магазина
-const shopModal = document.getElementById('shop-modal');
-
-function openShop() {
-    shopModal.style.display = 'block';
-}
-
-function closeShop() {
-    shopModal.style.display = 'none';
-}
-
-// Покупка улучшений
-window.buyClickUpgrade = () => {
-    if (score >= clickUpgradeCost) {
-        score -= clickUpgradeCost;
-        clickUpgrade++;
-        clickUpgradeCost *= 2; // Удвоение стоимости следующего улучшения
-        updateGame();
+    function updateProgressBar() {
+        const progressPercentage = Math.min((charge / chargeCapacity) * 100, 100);
+        progressBar.style.width = `${progressPercentage}%`;
+        chargeLabel.textContent = `⚡️ ${charge}/${chargeCapacity}`;
     }
-};
 
-window.buyChargeSpeedUpgrade = () => {
-    if (score >= chargeUpgradeCost) {
-        score -= chargeUpgradeCost; // Вычитаем стоимость улучшения из счёта игрока
-        chargeIncrement += 5; // Увеличиваем скорость восстановления заряда на 5 единиц за раз
+    setInterval(function() {
+        if (charge < chargeCapacity) {
+            charge += chargeIncrement;
+            if (charge > chargeCapacity) charge = chargeCapacity;
+            updateProgressBar();
+        }
+    }, chargeSpeed);
 
-        // Удваиваем стоимость следующего улучшения скорости перезарядки
-        chargeUpgradeCost *= 2;
-
-        // Сохраняем обновлённые значения в localStorage
-        localStorage.setItem('chargeIncrement', chargeIncrement.toString());
-        localStorage.setItem('chargeUpgradeCost', chargeUpgradeCost.toString());
-
-        updateGame(); // Обновляем игру, чтобы отразить сделанные изменения
+    window.resetGame = function() {
+        localStorage.clear();
+        window.location.reload();
     }
-};
 
-window.buyChargeCapacityUpgrade = () => {
-    if (score >= chargeCapacityCost) {
-        score -= chargeCapacityCost;
-        chargeCapacity += 250;
-        chargeCapacityCost *= 2;
-        updateGame();
+    window.openShop = function() {
+        document.getElementById('shop-modal').style.display = 'block';
     }
-};
 
+    window.closeShop = function() {
+        document.getElementById('shop-modal').style.display = 'none';
+    }
 
-function saveGameState() {
-    // Prepare the game state data
-    const gameState = {
-        score: score,
-        charge: charge,
-        lastActive: Date.now() // Current timestamp
-    };
-
-    // Send a POST request to your API endpoint with the game state
-    // This is pseudo-code and will not actually send a request
-    fetch('/api/save-game-state', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(gameState)
-    });
-}
-
-// This function would be called when the game starts to load the game state
-function loadGameState() {
-    // Send a GET request to your API endpoint to retrieve the game state
-    // This is pseudo-code and will not actually send a request
-    fetch('/api/get-game-state')
-        .then(response => response.json())
-        .then(gameState => {
-            // Update the local game state with the retrieved data
-            score = gameState.score;
-            charge = gameState.charge;
-
-            // Calculate the charge recovery
-            const timePassed = Date.now() - gameState.lastActive;
-            const chargeRecovered = Math.floor(timePassed / chargeSpeed) * chargeIncrement;
-            charge = Math.min(charge + chargeRecovered, chargeCapacity);
-
-            // Update the UI
+    window.buyClickUpgrade = function() {
+        if (score >= clickUpgradeCost) {
+            score -= clickUpgradeCost;
+            clickUpgrade++;
+            clickUpgradeCost *= 2;
             updateGame();
-        });
-}
+        }
+    }
 
-// Call loadGameState when the document is loaded
-document.addEventListener('DOMContentLoaded', loadGameState);
+    window.buyChargeSpeedUpgrade = function() {
+        if (score >= chargeUpgradeCost) {
+            score -= chargeUpgradeCost;
+            chargeIncrement += 5;
+            chargeUpgradeCost *= 2;
+            updateGame();
+        }
+    }
 
-document.addEventListener('DOMContentLoaded', updateGame);
+    window.buyChargeCapacityUpgrade = function() {
+        if (score >= chargeCapacityCost) {
+            score -= chargeCapacityCost;
+            chargeCapacity += 250;
+            chargeCapacityCost *= 2;
+            updateGame();
+        }
+    }
+
+    updateGame();
+});
+
 
 </script>
 </body>
 </html>
+
+
 
 
 
