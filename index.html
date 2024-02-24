@@ -191,19 +191,20 @@
             <div id="close-button" onclick="closeShop()">⤫</div>
             <div class="shop-item">
                 <div>Click Upgrade (+1 per click)</div>
-                <div>Cost: <span id="clickUpgradeCost">10</span> coins</div>
+                <div>Cost: <span id="clickUpgradeCost"></span> coins</div>
                 <button class="buy-button" onclick="buyClickUpgrade()">Buy</button>
             </div>
             <div class="shop-item">
                 <div>Charge Speed Upgrade (faster recharge)</div>
-                <div>Cost: <span id="chargeSpeedCost">20</span> coins</div>
+                <div>Cost: <span id="chargeSpeedCost"></span> coins</div>
                 <button class="buy-button" onclick="buyChargeSpeedUpgrade()">Buy</button>
             </div>
             <div class="shop-item">
                 <div>Charge Capacity Upgrade (+250 max charge)</div>
-                <div>Cost: <span id="chargeCapacityCost">30</span> coins</div>
+                <div>Cost: <span id="chargeCapacityCost"></span> coins</div>
                 <button class="buy-button" onclick="buyChargeCapacityUpgrade()">Buy</button>
             </div>
+
         </div>
     </div>
 <script>
@@ -258,6 +259,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         scoreDisplay.textContent = `${score}`;
         chargeLabel.textContent = `⚡️ ${charge}/${chargeCapacity}`;
+
+        document.getElementById('clickUpgradeCost').textContent = clickUpgradeCost;
+        document.getElementById('chargeSpeedCost').textContent = chargeUpgradeCost;
+        document.getElementById('chargeCapacityCost').textContent = chargeCapacityCost;
+
         updateProgressBar();
     }
 
@@ -327,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
 
 
 
