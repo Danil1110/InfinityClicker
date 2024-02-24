@@ -147,6 +147,19 @@
             transform: scale(0.9); /* Уменьшаем размер монеты до 90% при нажатии */
             transition: transform 0.1s; /* Сглаживаем переход */
         }
+        button, #coin img {
+            outline: none; /* Убирает контур при фокусировке */
+            -webkit-tap-highlight-color: transparent; /* Убирает синий фон при нажатии в iOS и Android */
+        }
+        
+        button:active, #coin img:active {
+            outline: none;
+        }
+        
+        /* Опционально, для предотвращения любых "нажатий" на мобильных устройствах */
+        body, button, #coin img {
+            touch-action: manipulation;
+        }
 
     </style>
 </head>
