@@ -28,7 +28,7 @@
             transform: scale(0.9); /* Эффект "нажатия" */
             transition: transform 0.1s; /* Плавный переход */
         }
-        
+
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -165,11 +165,11 @@
             outline: none; /* Убирает контур при фокусировке */
             -webkit-tap-highlight-color: transparent; /* Убирает синий фон при нажатии в iOS и Android */
         }
-        
+
         button:active, #coin img:active {
             outline: none;
         }
-        
+
         /* Опционально, для предотвращения любых "нажатий" на мобильных устройствах */
         body, button, #coin img {
             touch-action: manipulation;
@@ -218,20 +218,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let chargeCapacityCost = parseInt(localStorage.getItem('chargeCapacityCost') || '500');
     let chargeIncrement = parseInt(localStorage.getItem('chargeIncrement') || '7');
 
-    // Расчет восстановленной энергии при загрузке страницы
+    // Восстановление времени последнего обновления и расчет восстановленной энергии
     const lastUpdateTime = parseInt(localStorage.getItem('lastUpdateTime') || Date.now());
     const currentTime = Date.now();
     const timePassed = currentTime - lastUpdateTime;
     const energyRecovered = Math.floor(timePassed / chargeSpeed) * chargeIncrement;
     charge = Math.min(charge + energyRecovered, chargeCapacity);
-
     localStorage.setItem('lastUpdateTime', currentTime.toString());
 
+    // Элементы интерфейса
     const scoreDisplay = document.getElementById('score');
     const progressBar = document.getElementById('progress-value');
     const chargeLabel = document.getElementById('charge-label');
     const coinWrapper = document.getElementById('coin');
 
+    // Событие клика по монете
     coinWrapper.addEventListener('click', function() {
         let costPerClick = clickUpgrade + 1;
         if (charge >= costPerClick) {
@@ -241,26 +242,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Обновление состояния игры
     function updateGame() {
         localStorage.setItem('score', score.toString());
         localStorage.setItem('charge', charge.toString());
+        localStorage.setItem('clickUpgrade', clickUpgrade.toString());
         localStorage.setItem('clickUpgradeCost', clickUpgradeCost.toString());
+        localStorage.setItem('chargeUpgradeCost', chargeUpgradeCost.toString());
+        localStorage.setItem('chargeSpeed', chargeSpeed.toString());
+        localStorage.setItem('chargeCapacity', chargeCapacity.toString());
+        localStorage.setItem('chargeCapacityCost', chargeCapacityCost.toString());
+        localStorage.setItem('chargeIncrement', chargeIncrement.toString());
         localStorage.setItem('lastUpdateTime', Date.now().toString());
 
         scoreDisplay.textContent = score;
         document.getElementById('clickUpgradeCost').textContent = clickUpgradeCost;
         document.getElementById('chargeSpeedCost').textContent = chargeUpgradeCost;
         document.getElementById('chargeCapacityCost').textContent = chargeCapacityCost;
+        document.getElementById('charge-label').textContent = `⚡️ ${charge}/${chargeCapacity}`;
 
         updateProgressBar();
     }
 
+    // Обновление индикатора заряда
     function updateProgressBar() {
         const progressPercentage = Math.min((charge / chargeCapacity) * 100, 100);
         progressBar.style.width = `${progressPercentage}%`;
-        chargeLabel.textContent = `⚡️ ${charge}/${chargeCapacity}`;
     }
 
+    // Периодическое обновление заряда
     setInterval(function() {
         if (charge < chargeCapacity) {
             charge += chargeIncrement;
@@ -269,19 +279,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, chargeSpeed);
 
+    // Сброс игры
     window.resetGame = function() {
         localStorage.clear();
         window.location.reload();
     }
 
+    // Открытие магазина
     window.openShop = function() {
         document.getElementById('shop-modal').style.display = 'block';
     }
 
+    // Закрытие магазина
     window.closeShop = function() {
         document.getElementById('shop-modal').style.display = 'none';
     }
 
+    // Покупка улучшений
     window.buyClickUpgrade = function() {
         if (score >= clickUpgradeCost) {
             score -= clickUpgradeCost;
@@ -309,9 +323,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Восстановление состояния интерфейса
     updateGame();
 });
-
 
 </script>
 </body>
