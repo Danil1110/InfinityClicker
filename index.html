@@ -173,7 +173,9 @@
             touch-action: manipulation;
         }
 
-
+        .hidden {
+            display: none;
+        }
 
     </style>
 </head>
@@ -190,66 +192,145 @@
         <div id="shop-modal">
             <div id="close-button" onclick="closeShop()">⤫</div>
             <div class="shop-item">
-                <div>Click Upgrade (+2 per click) <span id="clickUpgradeLevel">Level: 1</span></div>
-                <div>Cost: <span id="clickUpgradeCost"></span> coins</div>
+                <div>Click Upgrade (+1 per click)</div>
+                <div>Cost: ~<span id="clickUpgradeCost"></span> </div>
+                <div>Level: <span id="clickUpgradeLevel">1</span> </div>
                 <button class="buy-button" id="buyClickUpgrade" onclick="buyClickUpgrade()">Buy</button>
             </div>
             <div class="shop-item">
-                <div>Charge Speed Upgrade (faster recharge) <span id="chargeSpeedLevel">Level: 1</span></div>
-                <div>Cost: <span id="chargeSpeedCost"></span> coins</div>
-                <button class="buy-button" id="buyChargeSpeed" onclick="buyChargeSpeedUpgrade()">Buy</button>
+                <div>Charge Speed Upgrade (+5 faster recharge)</div>
+                <div>Cost: ~<span id="chargeSpeedCost"></span> </div>
+                <div>Level: <span id="chargeSpeedLevel">1</span></div>
+                <button class="buy-button" id="buyChargeSpeedUpgrade" onclick="buyChargeSpeedUpgrade()">Buy</button>
             </div>
             <div class="shop-item">
-                <div>Charge Capacity Upgrade (+250 max charge) <span id="chargeCapacityLevel">Level: 1</span></div>
-                <div>Cost: <span id="chargeCapacityCost"></span> coins</div>
-                <button class="buy-button" id="buyChargeCapacity" onclick="buyChargeCapacityUpgrade()">Buy</button>
+                <div>Charge Capacity Upgrade (+250 max charge)</div>
+                <div>Cost: ~<span id="chargeCapacityCost"></span> </div>
+                <div>Level: <span id="chargeCapacityLevel">1</span></div>
+                <button class="buy-button" id="buyChargeCapacityUpgrade" onclick="buyChargeCapacityUpgrade()">Buy</button>
             </div>
         </div>
     </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let score = parseInt(localStorage.getItem('score') || '0');
-    let charge = parseInt(localStorage.getItem('charge') || '1000');
-    let clickUpgrade = parseInt(localStorage.getItem('clickUpgrade') || '1');
+    let score = parseInt(localStorage.getItem('score') || '55000');
+    let charge = parseInt(localStorage.getItem('charge') || '0');
     let clickUpgradeLevel = parseInt(localStorage.getItem('clickUpgradeLevel') || '1');
     let clickUpgradeCost = parseInt(localStorage.getItem('clickUpgradeCost') || '100');
-    let chargeSpeed = parseInt(localStorage.getItem('chargeSpeed') || '2000');
+    let clickUpgrade = parseInt(localStorage.getItem('clickUpgrade') || '1'); // Добавляем для учета количества увеличения клика
     let chargeSpeedLevel = parseInt(localStorage.getItem('chargeSpeedLevel') || '1');
-    let chargeSpeedCost = parseInt(localStorage.getItem('chargeSpeedCost') || '150');
-    let chargeCapacity = parseInt(localStorage.getItem('chargeCapacity') || '1000');
+    let chargeSpeedCost = parseInt(localStorage.getItem('chargeSpeedCost') || '750');
     let chargeCapacityLevel = parseInt(localStorage.getItem('chargeCapacityLevel') || '1');
-    let chargeCapacityCost = parseInt(localStorage.getItem('chargeCapacityCost') || '200');
+    let chargeCapacityCost = parseInt(localStorage.getItem('chargeCapacityCost') || '500');
+    let chargeSpeed = parseInt(localStorage.getItem('chargeSpeed') || '2000');
+    let chargeCapacity = parseInt(localStorage.getItem('chargeCapacity') || '1000');
+    let chargeIncrement = parseInt(localStorage.getItem('chargeIncrement') || '7');
+
+    const lastUpdateTime = parseInt(localStorage.getItem('lastUpdateTime') || Date.now());
+    const currentTime = Date.now();
+    const timePassed = currentTime - lastUpdateTime;
+    const energyRecovered = Math.floor(timePassed / chargeSpeed) * chargeIncrement;
+    charge = Math.min(charge + energyRecovered, chargeCapacity);
+    localStorage.setItem('lastUpdateTime', currentTime.toString());
 
     const scoreDisplay = document.getElementById('score');
     const progressBar = document.getElementById('progress-value');
     const chargeLabel = document.getElementById('charge-label');
+    const coinWrapper = document.getElementById('coin');
+
+    coinWrapper.addEventListener('click', function() {
+        let costPerClick = clickUpgrade;
+        if (charge >= costPerClick) {
+            score += clickUpgrade;
+            charge -= costPerClick;
+            updateGame();
+        }
+    });
 
     function updateGame() {
         localStorage.setItem('score', score.toString());
         localStorage.setItem('charge', charge.toString());
-        localStorage.setItem('clickUpgrade', clickUpgrade.toString());
         localStorage.setItem('clickUpgradeLevel', clickUpgradeLevel.toString());
+        localStorage.setItem('clickUpgrade', clickUpgrade.toString()); // Обновляем количество увеличения клика
         localStorage.setItem('clickUpgradeCost', clickUpgradeCost.toString());
-        localStorage.setItem('chargeSpeed', chargeSpeed.toString());
         localStorage.setItem('chargeSpeedLevel', chargeSpeedLevel.toString());
         localStorage.setItem('chargeSpeedCost', chargeSpeedCost.toString());
-        localStorage.setItem('chargeCapacity', chargeCapacity.toString());
         localStorage.setItem('chargeCapacityLevel', chargeCapacityLevel.toString());
         localStorage.setItem('chargeCapacityCost', chargeCapacityCost.toString());
+        localStorage.setItem('chargeSpeed', chargeSpeed.toString());
+        localStorage.setItem('chargeCapacity', chargeCapacity.toString());
+        localStorage.setItem('chargeIncrement', chargeIncrement.toString());
+        localStorage.setItem('lastUpdateTime', Date.now().toString());
 
         scoreDisplay.textContent = `${score}`;
         chargeLabel.textContent = `⚡️ ${charge}/${chargeCapacity}`;
-
         document.getElementById('clickUpgradeCost').textContent = clickUpgradeCost;
+        document.getElementById('clickUpgradeLevel').textContent = clickUpgradeLevel;
         document.getElementById('chargeSpeedCost').textContent = chargeSpeedCost;
+        document.getElementById('chargeSpeedLevel').textContent = chargeSpeedLevel;
         document.getElementById('chargeCapacityCost').textContent = chargeCapacityCost;
+        document.getElementById('chargeCapacityLevel').textContent = chargeCapacityLevel;
 
-        // Обновление кнопок и уровней для всех улучшений
-        updateButton('clickUpgrade', clickUpgradeLevel);
-        updateButton('chargeSpeed', chargeSpeedLevel);
-        updateButton('chargeCapacity', chargeCapacityLevel);
+
+        document.getElementById('clickUpgradeCost').textContent = clickUpgradeLevel < 10 ? clickUpgradeCost : '';
+        document.getElementById('chargeSpeedCost').textContent = chargeSpeedLevel < 10 ? chargeSpeedCost : '';
+        document.getElementById('chargeCapacityCost').textContent = chargeCapacityLevel < 10 ? chargeCapacityCost : '';
+
+        // Проверка на максимальный уровень и обновление состояния кнопок
+        checkMaxLevel('buyClickUpgrade', clickUpgradeLevel);
+        checkMaxLevel('buyChargeSpeedUpgrade', chargeSpeedLevel);
+        checkMaxLevel('buyChargeCapacityUpgrade', chargeCapacityLevel);
+
 
         updateProgressBar();
+    }
+
+    function checkMaxLevel(buttonId, level) {
+    const button = document.getElementById(buttonId);
+    const costContainerId = buttonId.replace('buy', '') + 'CostContainer'; // Получаем ID контейнера стоимости
+    const costContainer = document.getElementById(costContainerId);
+
+    if (level >= 10) {
+        button.innerHTML = 'Max';
+        button.style.background = 'linear-gradient(to right, yellow, orange)';
+        button.disabled = true;
+        if (costContainer) costContainer.classList.add('hidden'); // Скрываем контейнер цены
+    } else {
+        button.innerHTML = 'Buy';
+        button.style.background = '';
+        button.disabled = false;
+        if (costContainer) costContainer.classList.remove('hidden'); // Показываем контейнер цены
+    }
+}
+
+    window.buyClickUpgrade = function() {
+        if (score >= clickUpgradeCost && clickUpgradeLevel < 10) {
+            score -= clickUpgradeCost;
+            clickUpgradeLevel++;
+            clickUpgrade++; // Увеличиваем количество увеличения клика
+            clickUpgradeCost *= 2;
+            updateGame();
+        }
+    }
+
+    window.buyChargeSpeedUpgrade = function() {
+        if (score >= chargeSpeedCost && chargeSpeedLevel < 10) {
+            score -= chargeSpeedCost;
+            chargeSpeedLevel++;
+            chargeIncrement += 5; // Увеличиваем скорость зарядки
+            chargeSpeedCost *= 2;
+            updateGame();
+        }
+    }
+
+    window.buyChargeCapacityUpgrade = function() {
+        if (score >= chargeCapacityCost && chargeCapacityLevel < 10) {
+            score -= chargeCapacityCost;
+            chargeCapacityLevel++;
+            chargeCapacity += 250; // Увеличиваем емкость зарядки
+            chargeCapacityCost *= 2;
+            updateGame();
+        }
     }
 
     function updateProgressBar() {
@@ -257,63 +338,27 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBar.style.width = `${progressPercentage}%`;
     }
 
-    function updateButton(upgradeType, level) {
-        let button = document.getElementById(`buy${upgradeType}`);
-        if (level >= 10) {
-            button.textContent = 'Max';
-            button.disabled = true;
-            button.style.background = 'linear-gradient(to right, #FFD700, #FFA500)';
-        } else {
-            button.textContent = 'Buy';
-            button.disabled = false;
-            button.style.background = '';
-        }
-    }
-
-    window.buyClickUpgrade = function() {
-        if (score >= clickUpgradeCost && clickUpgradeLevel < 10) {
-            score -= clickUpgradeCost;
-            clickUpgradeLevel++;
-            clickUpgrade += 2; // Увеличиваем бонус клика на 2 за каждый уровень
-            clickUpgradeCost *= 2;
+    setInterval(function() {
+        if (charge < chargeCapacity) {
+            charge += chargeIncrement;
+            if (charge > chargeCapacity) charge = chargeCapacity;
             updateGame();
         }
-    };
+    }, chargeSpeed);
 
-    window.buyChargeSpeedUpgrade = function() {
-        if (score >= chargeSpeedCost && chargeSpeedLevel < 10) {
-            score -= chargeSpeedCost;
-            chargeSpeedLevel++;
-            chargeSpeed -= 200; // Уменьшаем время зарядки
-            chargeSpeedCost *= 2;
-            updateGame();
-        }
-    };
-
-    window.buyChargeCapacityUpgrade = function() {
-        if (score >= chargeCapacityCost && chargeCapacityLevel < 10) {
-            score -= chargeCapacityCost;
-            chargeCapacityLevel++;
-            chargeCapacity += 250; // Увеличиваем емкость заряда
-            chargeCapacityCost *= 2;
-            updateGame();
-        }
-    };
-
-    // Сброс игры
     window.resetGame = function() {
         localStorage.clear();
+        localStorage.setItem('charge', chargeCapacity.toString()); // Устанавливаем заряд равным максимальной емкости перед перезагрузкой
         window.location.reload();
-    };
+    }
 
-    // Открытие и закрытие магазина
     window.openShop = function() {
         document.getElementById('shop-modal').style.display = 'block';
-    };
+    }
 
     window.closeShop = function() {
         document.getElementById('shop-modal').style.display = 'none';
-    };
+    }
 
     updateGame();
 });
