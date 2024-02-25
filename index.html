@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infinity Clicker</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <script src="https://unpkg.com/@tonconnect/ui@1.0.0-beta.5/dist/tonconnect-ui.min.js"></script>
     <style>
         body, button, #coin img {
             -webkit-user-select: none; /* Chrome/Safari/Opera */
@@ -90,7 +91,7 @@
         #reset-button {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
             padding: 10px;
             background-color: #fff;
             color: #000;
@@ -177,8 +178,16 @@
             display: none;
         }
 
+         #connect-button-root {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            z-index: 1000; /* Убедитесь, что кнопка находится поверх других элементов */
+        }
+
     </style>
 </head>
+
 <body>
     <div id="clicker-container">
         <div id="score">0</div>
@@ -211,7 +220,17 @@
             </div>
         </div>
     </div>
+    <div id="connect-button-root"></div>
+
+
 <script>
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://danil1110.github.io/InfinityClicker/connect-method.json',
+            buttonRootId: 'connect-button-root'
+        });
+
+        tonConnectUI.onStatusChange(console.log);
+
 document.addEventListener('DOMContentLoaded', function() {
     let score = parseInt(localStorage.getItem('score') || '55000');
     let charge = parseInt(localStorage.getItem('charge') || '0');
@@ -365,7 +384,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
 
 
 
