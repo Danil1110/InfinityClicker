@@ -46,7 +46,6 @@
 </body>
 </html>
  -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,6 +55,7 @@
     <title>Infinity Clicker</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <script src="https://unpkg.com/@tonconnect/ui@1.0.0-beta.5/dist/tonconnect-ui.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body, button, #coin img {
             -webkit-user-select: none; /* Chrome/Safari/Opera */
@@ -226,11 +226,12 @@
             display: none;
         }
 
-         #connect-button-root {
+        #connect-button-root {
             position: absolute;
             right: 10px;
             top: 10px;
             z-index: 1000; /* Убедитесь, что кнопка находится поверх других элементов */
+            background: #FFA500;
         }
 
         #wallet-info {
@@ -319,9 +320,10 @@ document.addEventListener('DOMContentLoaded', function() {
         else tonConnectUI.openModal()
     })
 
+    let tg = window.Telegram.WebApp;
+    tg.expand();
 
-
-    let score = parseInt(localStorage.getItem('score') || '0');
+    let score = parseInt(localStorage.getItem('score') || '55000');
     let charge = parseInt(localStorage.getItem('charge') || '0');
     let clickUpgradeLevel = parseInt(localStorage.getItem('clickUpgradeLevel') || '1');
     let clickUpgradeCost = parseInt(localStorage.getItem('clickUpgradeCost') || '100');
@@ -473,10 +475,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
-
-
-
 
 
 
