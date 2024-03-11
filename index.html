@@ -269,18 +269,59 @@
             </div>
         </div>
     </div>
-    <div id="connect-button-root"></div>
+    <!-- TON Connect button -->
+        <div id="connect-button-root"></div>
+
+        <!-- Display connected wallet address -->
+        <div id="wallet-info"></div>
 
 
 <script>
-const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://danil1110.github.io/InfinityClicker/connect-method.json',
-            buttonRootId: 'connect-button-root'
-        });
-
-        tonConnectUI.onStatusChange(console.log);
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize TON Connect UI
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json', // Your manifest URL
+        buttonRootId: 'connect-button-root' // ID of the element for TON Connect button
+    });
+
+    async function connectToWallet() {
+        const connectedWallet = await tonConnectUI.connectWallet();
+    }
+
+    async function getAddressWalet() {
+        let _address = ''
+        if (tonConnectUI) {
+            let res = await tonConnectUI.connectionRestored
+            if (res || tonConnectUI?.account?.address) {
+                if (tonConnectUI?.account?.address) {
+                    _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address)
+                    console.log(_address)
+                }
+            }
+        }
+        return _address
+    }
+
+    tonConnectUI.modal.onStateChange(state => {
+        getAddressWalet().then(address => {
+            if (address)
+                document.getElementById(`wallet-info`).innerHTML = `Connected walet: ${address}`
+            //раскоментировать следующую строку, если надо что бы модальное окно невозможно было закрыть пока не подключишь кошелек
+            // else tonConnectUI.openModal()
+        })
+
+    });
+
+
+    getAddressWalet().then(address => {
+        if (address)
+            document.getElementById(`wallet-info`).innerHTML = `Connected walet: ${address}`
+        else tonConnectUI.openModal()
+    })
+
+
+    
     let score = parseInt(localStorage.getItem('score') || '55000');
     let charge = parseInt(localStorage.getItem('charge') || '0');
     let clickUpgradeLevel = parseInt(localStorage.getItem('clickUpgradeLevel') || '1');
