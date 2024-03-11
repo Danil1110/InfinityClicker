@@ -21,22 +21,28 @@
             buttonRootId: 'ton-connect' // ID элемента, где будет размещена кнопка подключения кошелька
         });
 
-        // Функция для подключения кошелька и вывода информации о нем на сайт
-        async function connectAndDisplayWalletInfo() {
-            try {
-                // Подключаем кошелек
-                const connectedWallet = await tonConnectUI.connectWallet();
-                // Формируем строку с информацией о подключенном кошельке
-                const walletInfo = `Connected Wallet Address: ${connectedWallet.address}, Public Key: ${connectedWallet.publicKey}`;
-                // Выводим информацию о подключенном кошельке на сайт
-                document.getElementById('wallet-info').innerText = walletInfo;
-            } catch (error) {
-                console.error("Error connecting to wallet:", error);
+        async function connectToWallet() {
+            const connectedWallet = await tonConnectUI.connectWallet();
+            if (connectedWallet) {
+                // Save the connected wallet address to LocalStorage
+                localStorage.setItem('connectedWallet', connectedWallet.address);
+                // Display connected wallet address
+                document.getElementById('connected-wallet-info').innerText = `Connected Wallet Address: ${connectedWallet.address}`;
             }
         }
 
-        // Вызываем функцию при загрузке страницы
-        connectAndDisplayWalletInfo();
+        // Call the function
+        connectToWallet().catch(error => {
+            console.error("Error connecting to wallet:", error);
+        });
+
+        // Retrieve and display connected wallet address after page reload
+        window.addEventListener('load', () => {
+            const connectedWalletAddress = localStorage.getItem('connectedWallet');
+            if (connectedWalletAddress) {
+                document.getElementById('connected-wallet-info').innerText = `Connected Wallet Address: ${connectedWalletAddress}`;
+            }
+        });
     </script>
 </body>
 </html>
