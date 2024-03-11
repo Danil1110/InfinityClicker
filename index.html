@@ -23,11 +23,9 @@
 
         // Функция для вывода адреса подключенного кошелька на экран
         function displayConnectedWalletAddress() {
-            const connectedWalletAddress = tonConnectUI.account.address;
-            if (connectedWalletAddress) {
-                const friendlyAddress = toUserFriendlyAddress(TonConnectUI.account.address);
-                document.getElementById('wallet-info').innerText = `Connected Wallet: ${friendlyAddress}`;
-            }
+            const connectedWalletAddress = toUserFriendlyAddress(TonConnectUI.account.address);
+            document.getElementById('wallet-info').innerText = `Connected Wallet: ${connectedWalletAddress}`;
+            
         }
 
         // Обработчик события подключения кошелька
