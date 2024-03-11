@@ -14,28 +14,34 @@
     <!-- Элемент для вывода информации о подключенном кошельке -->
     <div id="wallet-info"></div>
 
-    <script>
-        // Создаем экземпляр TON Connect UI
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json', // Укажите URL вашего manifest.json файла
-            buttonRootId: 'ton-connect' // ID элемента, где будет размещена кнопка подключения кошелька
-        });
+  <script>
+    // Создаем экземпляр TON Connect UI
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json', // Укажите URL вашего manifest.json файла
+        buttonRootId: 'ton-connect' // ID элемента, где будет размещена кнопка подключения кошелька
+    });
+    console.log(tonConnectUI)
 
-        async function connectToWallet() {
+    async function connectToWallet() {
         const connectedWallet = await tonConnectUI.connectWallet();
-        // Do something with connectedWallet if needed
-        console.log(connectedWallet);
-        
-        // Вывод адреса подключенного кошелька на экран
-        const connectedWalletAddress = connectedWallet.address;
-        document.getElementById('wallet-info').innerText = `Connected Wallet: ${connectedWalletAddress}`;
+    }
+
+    async function getAddressWalet() {
+        let _address = ''
+        if (tonConnectUI) {
+            let res = await tonConnectUI.connectionRestored
+            if (res || tonConnectUI?.account?.address) {
+                if (tonConnectUI?.account?.address) {
+                    _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address)
+                    console.log(_address)
+                }
+            }
         }
+        return _address
+    }
     
-        // Call the function
-        connectToWallet().catch(error => {
-            console.error("Error connecting to wallet:", error);
-        });
-    </script>
+    getAddressWalet().then(address => document.getElementById(`wallet-info`).innerHTML = `Connected walet: ${address}`)
+</script>
 
 </body>
 </html>
