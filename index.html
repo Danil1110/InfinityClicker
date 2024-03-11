@@ -25,7 +25,7 @@
         function displayConnectedWalletAddress() {
             const connectedWalletAddress = tonConnectUI.account.address;
             if (connectedWalletAddress) {
-                const friendlyAddress = tonConnectUI.toUserFriendly(connectedWalletAddress);
+                const friendlyAddress = toUserFriendlyAddress(TonConnectUI.account.address);
                 document.getElementById('wallet-info').innerText = `Connected Wallet: ${friendlyAddress}`;
             }
         }
