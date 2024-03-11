@@ -21,23 +21,22 @@
             buttonRootId: 'ton-connect' // ID элемента, где будет размещена кнопка подключения кошелька
         });
 
-        // Функция для вывода адреса подключенного кошелька на экран
-        function displayConnectedWalletAddress() {
-            const connectedWalletAddress = toUserFriendlyAddress(TonConnectUI.account.address);
-            document.getElementById('wallet-info').innerText = `Connected Wallet: ${connectedWalletAddress}`;
-            
+        async function connectToWallet() {
+        const connectedWallet = await tonConnectUI.connectWallet();
+        // Do something with connectedWallet if needed
+        console.log(connectedWallet);
+        
+        // Вывод адреса подключенного кошелька на экран
+        const connectedWalletAddress = connectedWallet.address;
+        document.getElementById('wallet-info').innerText = `Connected Wallet: ${connectedWalletAddress}`;
         }
-
-        // Обработчик события подключения кошелька
-        tonConnectUI.on('connected', () => {
-            // Выводим адрес на экран при подключении кошелька
-            displayConnectedWalletAddress();
+    
+        // Call the function
+        connectToWallet().catch(error => {
+            console.error("Error connecting to wallet:", error);
         });
+    </script>
 
-        // При загрузке страницы также выводим адрес подключенного кошелька, если он есть
-        displayConnectedWalletAddress();
-    </script>
-    </script>
 </body>
 </html>
 
