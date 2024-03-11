@@ -47,7 +47,6 @@
 </html>
  -->
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -234,6 +233,13 @@
             z-index: 1000; /* Убедитесь, что кнопка находится поверх других элементов */
         }
 
+        #wallet-info {
+            margin-top: 20px; /* Устанавливаем отступ сверху */
+            font-size: 16px; /* Настройте размер шрифта по вашему усмотрению */
+            color: white; /* Установите цвет текста */
+        }
+
+
     </style>
 </head>
 
@@ -268,12 +274,12 @@
                 <button class="buy-button" id="buyChargeCapacityUpgrade" onclick="buyChargeCapacityUpgrade()">Buy</button>
             </div>
         </div>
-    </div>
-    <!-- TON Connect button -->
         <div id="connect-button-root"></div>
 
-        <!-- Display connected wallet address -->
-        <div id="wallet-info"></div>
+    <!-- Display connected wallet address -->
+    <div id="wallet-info"></div>
+    </div>
+    <!-- TON Connect button -->
 
 
 <script>
@@ -281,15 +287,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize TON Connect UI
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json', // Your manifest URL
-        buttonRootId: 'connect-button-root' // ID of the element for TON Connect button
+        manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json', // Укажите URL вашего manifest.json файла
+        buttonRootId: 'connect-button-root' // ID элемента, где будет размещена кнопка подключения кошелька
     });
 
-    async function connectToWallet() {
-        const connectedWallet = await tonConnectUI.connectWallet();
-    }
+<!--    console.log(tonConnectUI)-->
+<!--    async function connectToWallet() {-->
+<!--        const connectedWallet = await tonConnectUI.connectWallet();-->
+<!--    }-->
 
-    async function getAddressWalet() {
+    async function getAddressWallet() {
         let _address = ''
         if (tonConnectUI) {
             let res = await tonConnectUI.connectionRestored
@@ -303,25 +310,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return _address
     }
 
-    tonConnectUI.modal.onStateChange(state => {
-        getAddressWalet().then(address => {
-            if (address)
-                document.getElementById(`wallet-info`).innerHTML = `Connected walet: ${address}`
-            //раскоментировать следующую строку, если надо что бы модальное окно невозможно было закрыть пока не подключишь кошелек
-            // else tonConnectUI.openModal()
-        })
-
-    });
+<!--    getAddressWallet().then(address => document.getElementById(`wallet-info`).innerHTML = `Connected wallet: ${address}`)-->
 
 
-    getAddressWalet().then(address => {
+    getAddressWallet().then(address => {
         if (address)
-            document.getElementById(`wallet-info`).innerHTML = `Connected walet: ${address}`
+            document.getElementById(`wallet-info`).innerHTML = `Connected wallet: ${address}`
         else tonConnectUI.openModal()
     })
 
 
-    
+
     let score = parseInt(localStorage.getItem('score') || '55000');
     let charge = parseInt(localStorage.getItem('charge') || '0');
     let clickUpgradeLevel = parseInt(localStorage.getItem('clickUpgradeLevel') || '1');
@@ -474,7 +473,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
 
 
 
