@@ -24,10 +24,8 @@
         async function connectToWallet() {
             const connectedWallet = await tonConnectUI.connectWallet();
             if (connectedWallet) {
-                // Save the connected wallet address to LocalStorage
-                localStorage.setItem('connectedWallet', connectedWallet.address);
                 // Display connected wallet address
-                document.getElementById('connected-wallet-info').innerText = `Connected Wallet Address: ${connectedWallet.address}`;
+                document.getElementById('connected-wallet-info').innerText = `Connected Wallet Address: ${toUserFriendlyAddress(connectedWallet.address)}`;
             }
         }
 
@@ -36,13 +34,10 @@
             console.error("Error connecting to wallet:", error);
         });
 
-        // Retrieve and display connected wallet address after page reload
-        window.addEventListener('load', () => {
-            const connectedWalletAddress = localStorage.getItem('connectedWallet');
-            if (connectedWalletAddress) {
-                document.getElementById('connected-wallet-info').innerText = `Connected Wallet Address: ${connectedWalletAddress}`;
-            }
-        });
+        // Convert TON address to user-friendly format
+        function toUserFriendlyAddress(address) {
+            return address.slice(0, 8) + "..." + address.slice(-4);
+        }
     </script>
 </body>
 </html>
