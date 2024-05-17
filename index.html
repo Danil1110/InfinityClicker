@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="script.js" defer></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body class="background-gradient">
     <div id="clicker-container">
@@ -45,7 +45,7 @@
 
         <!-- Display connected wallet address -->
         <div id="wallet-info"></div>
-        
+
         <!-- Modal for showing wallet connection error -->
         <div id="wallet-modal" class="hidden">
             <div class="modal-content">
@@ -53,7 +53,7 @@
                 <p>Please connect your wallet to play.</p>
             </div>
         </div>
-    </div> 
+    </div>
 </body>
 </html>
 
