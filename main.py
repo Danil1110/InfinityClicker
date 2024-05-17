@@ -2,11 +2,6 @@ import telebot
 from telebot import types
 import requests
 from bs4 import BeautifulSoup
-
-import telebot
-from telebot import types
-import requests
-from bs4 import BeautifulSoup
 import sqlite3
 from flask import Flask, request, jsonify, render_template
 import threading
