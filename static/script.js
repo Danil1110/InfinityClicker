@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', async function () {
-    let walletConnected = false; // Для отслеживания подключения кошелька
-    let telegram_id = null; // Переменная для хранения идентификатора пользователя Telegram
+    let walletConnected = false;
+    let telegram_id = null;
 
-    // Telegram Web App API
     const tg = window.Telegram.WebApp;
 
-    // Получаем идентификатор пользователя Telegram
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         telegram_id = tg.initDataUnsafe.user.id;
     }
@@ -24,10 +22,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                     _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
                     console.log(_address);
                     walletConnected = true;
-                    closeWalletModal(); // Закрытие окна при успешном подключении
+                    closeWalletModal();
                     initializeGameForWallet(_address);
-                    // Отправка адреса кошелька на сервер
-                    connectWallet(telegram_id, _address); // telegram_id должен быть известен
+                    connectWallet(telegram_id, _address);
                 }
             }
         }
@@ -46,14 +43,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             colorsSet: {
                 [TON_CONNECT_UI.THEME.DARK]: {
                     connectButton: {
-                        background: 'violet'
+                        background: 'purple'
                     }
                 }
             }
         }
     };
 
-    let score = 0; // Значение по умолчанию
+    let score = 0;
     let charge = 1000;
     let clickUpgradeLevel = 1;
     let clickUpgradeCost = 100;
@@ -101,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             score += clickUpgrade;
             charge -= costPerClick;
             updateGame();
-            await updateWalletData(telegram_id); // Обновление данных в бэкэнд
+            await updateWalletData(telegram_id);
         }
     });
 
@@ -110,8 +107,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (!address) {
             walletConnected = false;
             showWalletModal();
-            // Отправка запроса на отключение кошелька
-            disconnectWallet(telegram_id); // telegram_id должен быть известен
+            disconnectWallet(telegram_id);
         } else {
             walletConnected = true;
             closeWalletModal();
@@ -119,7 +115,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function updateGame() {
-        // Обновляем игру и сохраняем текущее состояние
         scoreDisplay.textContent = `${score}`;
         chargeLabel.textContent = `⚡️ ${charge}/${chargeCapacity}`;
         document.getElementById('clickUpgradeCost').textContent = clickUpgradeCost;
@@ -140,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function updateWalletData(telegram_id) {
         try {
-            let response = await fetch('https://your-backend-domain.com/update_wallet_data', { // Замените URL на ваш бэкэнд
+            let response = await fetch('https://danil1110.github.io/InfinityClicker/update_wallet_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -170,7 +165,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function fetchWalletData(telegram_id) {
         try {
-            let response = await fetch('https://your-backend-domain.com/get_wallet_data', { // Замените URL на ваш бэкэнд
+            let response = await fetch('https://danil1110.github.io/InfinityClicker/get_wallet_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -187,7 +182,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function connectWallet(telegram_id, address) {
         try {
-            let response = await fetch('https://your-backend-domain.com/connect_wallet', { // Замените URL на ваш бэкэнд
+            let response = await fetch('https://danil1110.github.io/InfinityClicker/connect_wallet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -203,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function disconnectWallet(telegram_id) {
         try {
-            let response = await fetch('https://your-backend-domain.com/disconnect_wallet', { // Замените URL на ваш бэкэнд
+            let response = await fetch('https://danil1110.github.io/InfinityClicker/disconnect_wallet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -233,72 +228,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     window.closeShop = function () {
         document.getElementById('shop-modal').style.display = 'none';
-    }
-
-    function checkMaxLevel(buttonId, level) {
-        const button = document.getElementById(buttonId);
-        const costContainerId = buttonId.replace('buy', '') + 'CostContainer'; // Получаем ID контейнера стоимости
-        const costContainer = document.getElementById(costContainerId);
-
-        if (level >= 10) {
-            button.innerHTML = 'Max';
-            button.style.background = 'linear-gradient(to right, yellow, orange)';
-            button.disabled = true;
-            if (costContainer) costContainer.classList.add('hidden'); // Скрываем контейнер цены
-        } else {
-            button.innerHTML = 'Buy';
-            button.style.background = '';
-            button.disabled = false;
-            if (costContainer) costContainer.classList.remove('hidden'); // Показываем контейнер цены
-        }
-    }
-
-    window.buyClickUpgrade = async function () {
-        await checkWalletConnection();
-        if (!walletConnected) {
-            showWalletModal();
-            return;
-        }
-        if (score >= clickUpgradeCost && clickUpgradeLevel < 10) {
-            score -= clickUpgradeCost;
-            clickUpgradeLevel++;
-            clickUpgrade++; // Увеличиваем количество увеличения клика
-            clickUpgradeCost *= 2;
-            updateGame();
-            await updateWalletData(telegram_id); // Обновление данных в бэкэнд
-        }
-    }
-
-    window.buyChargeSpeedUpgrade = async function () {
-        await checkWalletConnection();
-        if (!walletConnected) {
-            showWalletModal();
-            return;
-        }
-        if (score >= chargeSpeedCost && chargeSpeedLevel < 10) {
-            score -= chargeSpeedCost;
-            chargeSpeedLevel++;
-            chargeIncrement += 5; // Увеличиваем скорость зарядки
-            chargeSpeedCost *= 2;
-            updateGame();
-            await updateWalletData(telegram_id); // Обновление данных в бэкэнд
-        }
-    }
-
-    window.buyChargeCapacityUpgrade = async function () {
-        await checkWalletConnection();
-        if (!walletConnected) {
-            showWalletModal();
-            return;
-        }
-        if (score >= chargeCapacityCost && chargeCapacityLevel < 10) {
-            score -= chargeCapacityCost;
-            chargeCapacityLevel++;
-            chargeCapacity += 250; // Увеличиваем емкость зарядки
-            chargeCapacityCost *= 2;
-            updateGame();
-            await updateWalletData(telegram_id); // Обновление данных в бэкэнд
-        }
     }
 
     function showWalletModal() {
