@@ -1,480 +1,60 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TON Connect Wallet Integration</title>
-
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-</head>
-<body>
-
-    <div id="ton-connect"></div>
-
-
-    <div id="wallet-info"></div>
-
-  <script>
-    // Создаем экземпляр TON Connect UI
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json', // Укажите URL вашего manifest.json файла
-        buttonRootId: 'ton-connect' // ID элемента, где будет размещена кнопка подключения кошелька
-    });
-    console.log(tonConnectUI)
-
-    async function connectToWallet() {
-        const connectedWallet = await tonConnectUI.connectWallet();
-    }
-
-    async function getAddressWalet() {
-        let _address = ''
-        if (tonConnectUI) {
-            let res = await tonConnectUI.connectionRestored
-            if (res || tonConnectUI?.account?.address) {
-                if (tonConnectUI?.account?.address) {
-                    _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address)
-                    console.log(_address)
-                }
-            }
-        }
-        return _address
-    }
-    
-    getAddressWalet().then(address => document.getElementById(`wallet-info`).innerHTML = `Connected walet: ${address}`)
-</script>
-
-</body>
-</html>
- -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infinity Clicker</title>
+    <link rel="stylesheet" href="static/styles/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <script src="https://unpkg.com/@tonconnect/ui@1.0.0-beta.5/dist/tonconnect-ui.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body, button, #coin img {
-            -webkit-user-select: none; /* Chrome/Safari/Opera */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Нестандартизированный, но широко поддерживаемый */
-        }
-        #coin img {
-            -webkit-tap-highlight-color: transparent; /* Убирает подсветку при касании на iOS/Android */
-        }
-
-        .coin-wrapper, #coin img {
-            cursor: pointer;
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* для прозрачного цвета */
-            outline: none; /* Убирает контур вокруг элементов при нажатии */
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #FFA500, #FF4500, #FFD700);
-        }
-
-        #clicker-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        #score {
-            position: absolute;
-            font-size: 38px;
-            margin-bottom: 20px;
-            margin-top: -480px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .coin-wrapper {
-            position: absolute;
-            margin-top: -20px;
-            cursor: pointer;
-        }
-
-        #coin img {
-
-            width: 250px;
-            height: 250px;
-        }
-
-         #progress-container {
-            position: absolute;
-            width: 80%;
-            max-width: 380px;
-            height: 10px;
-            margin-top: 510px; /* Increased from 60px to 100px to push down by 40px */
-            position: relative;
-            background-color: #fff;
-            border-radius: 5px;
-        }
-
-        #progress-value {
-            height: 100%;
-            border-radius: 10px;
-            background: linear-gradient(to right,#FFC0CB,  #FFA07A,  #FFD700);
-            transition: width 0.5s ease-in-out;
-        }
-
-
-        #charge-label {
-            position: absolute;
-            top: -25px; /* If it was -25px and you want to move it down by 40px, you add 40 to -25 */
-            left: 0;
-            color: white;
-            font-weight: bold;
-        }
-
-        #reset-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 10px;
-            background-color: #fff;
-            color: #000;
-            cursor: pointer;
-            border: 1px solid #000;
-            border-radius: 5px;
-        }
-
-        #shop-button {
-            position: absolute;
-            margin-top: 640px;
-            padding: 10px 30px; /* Увеличение размера */
-            background: linear-gradient(to right top, #4CAF50, #00FF00);
-            color: #fff;
-            cursor: pointer;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem; /* Увеличение шрифта */
-        }
-
-        #shop-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        #close-button {
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        .shop-item {
-            margin: 20px 0;
-        }
-
-        .buy-button {
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: #fff;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-        }
-
-        body, button, #coin img {
-            -webkit-user-select: none; /* Safari */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+/Edge */
-            user-select: none; /* Стандартный синтаксис */
-        }
-
-
-        #coin img:active {
-            transform: scale(0.9); /* Мгновенное уменьшение размера при нажатии */
-
-        }
-
-
-        button, #coin img {
-            outline: none; /* Убирает контур при фокусировке */
-            -webkit-tap-highlight-color: transparent; /* Убирает синий фон при нажатии в iOS и Android */
-        }
-
-        button:active, #coin img:active {
-            outline: none;
-        }
-
-        /* Опционально, для предотвращения любых "нажатий" на мобильных устройствах */
-        body, button, #coin img {
-            touch-action: manipulation;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        #connect-button-root {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            z-index: 1000; /* Убедитесь, что кнопка находится поверх других элементов */
-            background: #FFA500;
-        }
-
-        #wallet-info {
-            margin-top: 20px; /* Устанавливаем отступ сверху */
-            font-size: 16px; /* Настройте размер шрифта по вашему усмотрению */
-            color: white; /* Установите цвет текста */
-        }
-
-
-    </style>
+    <script src="script.js" defer></script>
 </head>
-
-<body>
+<body class="background-gradient">
     <div id="clicker-container">
         <div id="score">0</div>
-        <div class="coin-wrapper" id="coin"><img src="INFTCOIN.png" alt="Coin"></div>
+        <div class="coin-wrapper" id="coin"><img src="static/images/InfinityCoin.png" alt="Coin"></div>
         <div id="progress-container">
             <div id="charge-label">⚡️ 1000/1000</div>
             <div id="progress-value" style="width: 100%;"></div>
         </div>
         <div id="reset-button" onclick="resetGame()">Reset</div>
         <button id="shop-button" onclick="openShop()">Shop</button>
-        <div id="shop-modal">
+        <div id="shop-modal" class="hidden">
             <div id="close-button" onclick="closeShop()">⤫</div>
             <div class="shop-item">
                 <div>Click Upgrade (+1 per click)</div>
-                <div>Cost: ~<span id="clickUpgradeCost"></span> </div>
-                <div>Level: <span id="clickUpgradeLevel">1</span> </div>
+                <div>Cost: ~<span id="clickUpgradeCost">100</span></div>
+                <div>Level: <span id="clickUpgradeLevel">1</span></div>
                 <button class="buy-button" id="buyClickUpgrade" onclick="buyClickUpgrade()">Buy</button>
             </div>
             <div class="shop-item">
                 <div>Charge Speed Upgrade (+5 faster recharge)</div>
-                <div>Cost: ~<span id="chargeSpeedCost"></span> </div>
+                <div>Cost: ~<span id="chargeSpeedCost">750</span></div>
                 <div>Level: <span id="chargeSpeedLevel">1</span></div>
                 <button class="buy-button" id="buyChargeSpeedUpgrade" onclick="buyChargeSpeedUpgrade()">Buy</button>
             </div>
             <div class="shop-item">
                 <div>Charge Capacity Upgrade (+250 max charge)</div>
-                <div>Cost: ~<span id="chargeCapacityCost"></span> </div>
+                <div>Cost: ~<span id="chargeCapacityCost">500</span></div>
                 <div>Level: <span id="chargeCapacityLevel">1</span></div>
                 <button class="buy-button" id="buyChargeCapacityUpgrade" onclick="buyChargeCapacityUpgrade()">Buy</button>
             </div>
         </div>
         <div id="connect-button-root"></div>
 
-    <!-- Display connected wallet address -->
-    <div id="wallet-info"></div>
+        <!-- Display connected wallet address -->
+        <div id="wallet-info"></div>
+        
+        <!-- Modal for showing wallet connection error -->
+        <div id="wallet-modal" class="hidden">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeWalletModal()">&times;</span>
+                <p>Please connect your wallet to play.</p>
+            </div>
+        </div>
     </div>
-    <!-- TON Connect button -->
-
-
-<script>
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize TON Connect UI
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json', // Укажите URL вашего manifest.json файла
-        buttonRootId: 'connect-button-root' // ID элемента, где будет размещена кнопка подключения кошелька
-    });
-
-<!--    console.log(tonConnectUI)-->
-<!--    async function connectToWallet() {-->
-<!--        const connectedWallet = await tonConnectUI.connectWallet();-->
-<!--    }-->
-
-    async function getAddressWallet() {
-        let _address = ''
-        if (tonConnectUI) {
-            let res = await tonConnectUI.connectionRestored
-            if (res || tonConnectUI?.account?.address) {
-                if (tonConnectUI?.account?.address) {
-                    _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address)
-                    console.log(_address)
-                }
-            }
-        }
-        return _address
-    }
-
-<!--    getAddressWallet().then(address => document.getElementById(`wallet-info`).innerHTML = `Connected wallet: ${address}`)-->
-
-
-    getAddressWallet().then(address => {
-        if (address)
-            document.getElementById(`wallet-info`).innerHTML = `Connected wallet: ${address}`
-        else tonConnectUI.openModal()
-    })
-
-    let tg = window.Telegram.WebApp;
-    tg.expand();
-
-    let score = parseInt(localStorage.getItem('score') || '55000');
-    let charge = parseInt(localStorage.getItem('charge') || '0');
-    let clickUpgradeLevel = parseInt(localStorage.getItem('clickUpgradeLevel') || '1');
-    let clickUpgradeCost = parseInt(localStorage.getItem('clickUpgradeCost') || '100');
-    let clickUpgrade = parseInt(localStorage.getItem('clickUpgrade') || '1'); // Добавляем для учета количества увеличения клика
-    let chargeSpeedLevel = parseInt(localStorage.getItem('chargeSpeedLevel') || '1');
-    let chargeSpeedCost = parseInt(localStorage.getItem('chargeSpeedCost') || '750');
-    let chargeCapacityLevel = parseInt(localStorage.getItem('chargeCapacityLevel') || '1');
-    let chargeCapacityCost = parseInt(localStorage.getItem('chargeCapacityCost') || '500');
-    let chargeSpeed = parseInt(localStorage.getItem('chargeSpeed') || '2000');
-    let chargeCapacity = parseInt(localStorage.getItem('chargeCapacity') || '1000');
-    let chargeIncrement = parseInt(localStorage.getItem('chargeIncrement') || '7');
-
-    const lastUpdateTime = parseInt(localStorage.getItem('lastUpdateTime') || Date.now());
-    const currentTime = Date.now();
-    const timePassed = currentTime - lastUpdateTime;
-    const energyRecovered = Math.floor(timePassed / chargeSpeed) * chargeIncrement;
-    charge = Math.min(charge + energyRecovered, chargeCapacity);
-    localStorage.setItem('lastUpdateTime', currentTime.toString());
-
-    const scoreDisplay = document.getElementById('score');
-    const progressBar = document.getElementById('progress-value');
-    const chargeLabel = document.getElementById('charge-label');
-    const coinWrapper = document.getElementById('coin');
-
-    coinWrapper.addEventListener('click', function() {
-        let costPerClick = clickUpgrade;
-        if (charge >= costPerClick) {
-            score += clickUpgrade;
-            charge -= costPerClick;
-            updateGame();
-        }
-    });
-
-    function updateGame() {
-        localStorage.setItem('score', score.toString());
-        localStorage.setItem('charge', charge.toString());
-        localStorage.setItem('clickUpgradeLevel', clickUpgradeLevel.toString());
-        localStorage.setItem('clickUpgrade', clickUpgrade.toString()); // Обновляем количество увеличения клика
-        localStorage.setItem('clickUpgradeCost', clickUpgradeCost.toString());
-        localStorage.setItem('chargeSpeedLevel', chargeSpeedLevel.toString());
-        localStorage.setItem('chargeSpeedCost', chargeSpeedCost.toString());
-        localStorage.setItem('chargeCapacityLevel', chargeCapacityLevel.toString());
-        localStorage.setItem('chargeCapacityCost', chargeCapacityCost.toString());
-        localStorage.setItem('chargeSpeed', chargeSpeed.toString());
-        localStorage.setItem('chargeCapacity', chargeCapacity.toString());
-        localStorage.setItem('chargeIncrement', chargeIncrement.toString());
-        localStorage.setItem('lastUpdateTime', Date.now().toString());
-
-        scoreDisplay.textContent = `${score}`;
-        chargeLabel.textContent = `⚡️ ${charge}/${chargeCapacity}`;
-        document.getElementById('clickUpgradeCost').textContent = clickUpgradeCost;
-        document.getElementById('clickUpgradeLevel').textContent = clickUpgradeLevel;
-        document.getElementById('chargeSpeedCost').textContent = chargeSpeedCost;
-        document.getElementById('chargeSpeedLevel').textContent = chargeSpeedLevel;
-        document.getElementById('chargeCapacityCost').textContent = chargeCapacityCost;
-        document.getElementById('chargeCapacityLevel').textContent = chargeCapacityLevel;
-
-
-        document.getElementById('clickUpgradeCost').textContent = clickUpgradeLevel < 10 ? clickUpgradeCost : '';
-        document.getElementById('chargeSpeedCost').textContent = chargeSpeedLevel < 10 ? chargeSpeedCost : '';
-        document.getElementById('chargeCapacityCost').textContent = chargeCapacityLevel < 10 ? chargeCapacityCost : '';
-
-        // Проверка на максимальный уровень и обновление состояния кнопок
-        checkMaxLevel('buyClickUpgrade', clickUpgradeLevel);
-        checkMaxLevel('buyChargeSpeedUpgrade', chargeSpeedLevel);
-        checkMaxLevel('buyChargeCapacityUpgrade', chargeCapacityLevel);
-
-
-        updateProgressBar();
-    }
-
-    function checkMaxLevel(buttonId, level) {
-    const button = document.getElementById(buttonId);
-    const costContainerId = buttonId.replace('buy', '') + 'CostContainer'; // Получаем ID контейнера стоимости
-    const costContainer = document.getElementById(costContainerId);
-
-    if (level >= 10) {
-        button.innerHTML = 'Max';
-        button.style.background = 'linear-gradient(to right, yellow, orange)';
-        button.disabled = true;
-        if (costContainer) costContainer.classList.add('hidden'); // Скрываем контейнер цены
-    } else {
-        button.innerHTML = 'Buy';
-        button.style.background = '';
-        button.disabled = false;
-        if (costContainer) costContainer.classList.remove('hidden'); // Показываем контейнер цены
-    }
-}
-
-    window.buyClickUpgrade = function() {
-        if (score >= clickUpgradeCost && clickUpgradeLevel < 10) {
-            score -= clickUpgradeCost;
-            clickUpgradeLevel++;
-            clickUpgrade++; // Увеличиваем количество увеличения клика
-            clickUpgradeCost *= 2;
-            updateGame();
-        }
-    }
-
-    window.buyChargeSpeedUpgrade = function() {
-        if (score >= chargeSpeedCost && chargeSpeedLevel < 10) {
-            score -= chargeSpeedCost;
-            chargeSpeedLevel++;
-            chargeIncrement += 5; // Увеличиваем скорость зарядки
-            chargeSpeedCost *= 2;
-            updateGame();
-        }
-    }
-
-    window.buyChargeCapacityUpgrade = function() {
-        if (score >= chargeCapacityCost && chargeCapacityLevel < 10) {
-            score -= chargeCapacityCost;
-            chargeCapacityLevel++;
-            chargeCapacity += 250; // Увеличиваем емкость зарядки
-            chargeCapacityCost *= 2;
-            updateGame();
-        }
-    }
-
-    function updateProgressBar() {
-        const progressPercentage = Math.min((charge / chargeCapacity) * 100, 100);
-        progressBar.style.width = `${progressPercentage}%`;
-    }
-
-    setInterval(function() {
-        if (charge < chargeCapacity) {
-            charge += chargeIncrement;
-            if (charge > chargeCapacity) charge = chargeCapacity;
-            updateGame();
-        }
-    }, chargeSpeed);
-
-    window.resetGame = function() {
-        localStorage.clear();
-        localStorage.setItem('charge', chargeCapacity.toString()); // Устанавливаем заряд равным максимальной емкости перед перезагрузкой
-        window.location.reload();
-    }
-
-    window.openShop = function() {
-        document.getElementById('shop-modal').style.display = 'block';
-    }
-
-    window.closeShop = function() {
-        document.getElementById('shop-modal').style.display = 'none';
-    }
-
-    updateGame();
-});
-</script>
 </body>
 </html>
-
 
 
