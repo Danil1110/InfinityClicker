@@ -178,12 +178,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 body: JSON.stringify({ telegram_id })
             });
             let data = await response.json();
-            if (data.status === 'success') {
-                return data;
-            } else {
-                console.error(data.message);
-                return null;
-            }
+            return data.status === 'success' ? data : null;
         } catch (error) {
             console.error('Error:', error);
             return null;
