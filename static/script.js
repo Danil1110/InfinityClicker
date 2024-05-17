@@ -3,6 +3,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     let telegram_id = null;
     let address = '';
 
+    // Проверка на запуск через Telegram Web App
+    if (window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        telegram_id = tg.initDataUnsafe.user.id;
+    } else {
+        alert("This app must be opened via Telegram Web App.");
+        return;
+    }
+
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
         buttonRootId: 'connect-button-root'
@@ -312,3 +322,4 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 });
+
