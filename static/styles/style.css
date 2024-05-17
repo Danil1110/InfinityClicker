@@ -1,0 +1,216 @@
+
+body {
+    min-height: 100vh; /* Высота не меньше 100% высоты окна */
+    background: linear-gradient(#000000, #000000,  #000000, #a234b193); /* Более плавный градиент */
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+body, button, #coin img {
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Нестандартизированный, но широко поддерживаемый */
+}
+#coin img {
+    -webkit-tap-highlight-color: transparent; /* Убирает подсветку при касании на iOS/Android */
+}
+
+.coin-wrapper, #coin img {
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* для прозрачного цвета */
+    outline: none; /* Убирает контур вокруг элементов при нажатии */
+}
+
+
+#clicker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#wallet-modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.hidden {
+    display: none;
+}
+
+#score {
+    position: absolute;
+    font-size: 38px;
+    margin-bottom: 20px;
+    margin-top: -480px;
+    font-weight: bold;
+    color: white;
+}
+
+.coin-wrapper {
+    position: absolute;
+    margin-top: -20px;
+    cursor: pointer;
+}
+
+#coin img {
+
+    width: 450px;
+    height: 300px;
+}
+
+ #progress-container {
+    position: absolute;
+    width: 80%;
+    max-width: 380px;
+    height: 10px;
+    margin-top: 510px; /* Increased from 60px to 100px to push down by 40px */
+    position: relative;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+#progress-value {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(to right,#FFC0CB,  #b869f8,  #d62eb2);
+    transition: width 0.5s ease-in-out;
+}
+
+
+#charge-label {
+    position: absolute;
+    top: -25px; /* If it was -25px and you want to move it down by 40px, you add 40 to -25 */
+    left: 0;
+    color: white;
+    font-weight: bold;
+}
+
+#reset-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    background-color: #fff;
+    color: #000;
+    cursor: pointer;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
+
+#shop-button {
+    position: absolute;
+    margin-top: 640px;
+    padding: 10px 30px; /* Увеличение размера */
+    background: linear-gradient(to right top, #4328a5, #5f3ab6);
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem; /* Увеличение шрифта */
+}
+
+#shop-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#close-button {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.shop-item {
+    margin: 20px 0;
+}
+
+.buy-button {
+    padding: 5px 10px;
+    background-color: #a251d8;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+body, button, #coin img {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Стандартный синтаксис */
+}
+
+
+#coin img:active {
+    transform: scale(0.9); /* Мгновенное уменьшение размера при нажатии */
+
+}
+
+
+button, #coin img {
+    outline: none; /* Убирает контур при фокусировке */
+    -webkit-tap-highlight-color: transparent; /* Убирает синий фон при нажатии в iOS и Android */
+}
+
+button:active, #coin img:active {
+    outline: none;
+}
+
+/* Опционально, для предотвращения любых "нажатий" на мобильных устройствах */
+body, button, #coin img {
+    touch-action: manipulation;
+}
+
+.hidden {
+    display: none;
+}
+
+#connect-button-root {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 1000; /* Убедитесь, что кнопка находится поверх других элементов */
+}
+
+#wallet-info {
+    margin-top: 20px; /* Устанавливаем отступ сверху */
+    font-size: 16px; /* Настройте размер шрифта по вашему усмотрению */
+    color: white; /* Установите цвет текста */
+}
