@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async function () {
-    let walletConnected = false;
+    let walletConnected = false; 
     let telegram_id = null;
 
     const tg = window.Telegram.WebApp;
@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                     console.log(_address);
                     walletConnected = true;
                     closeWalletModal();
-                    initializeGameForWallet(_address);
-                    connectWallet(telegram_id, _address);
+                    await connectWallet(telegram_id, _address);
+                    initializeGameForWallet();
                 }
             }
         }
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             colorsSet: {
                 [TON_CONNECT_UI.THEME.DARK]: {
                     connectButton: {
-                        background: 'purple'
+                        background: 'violet'
                     }
                 }
             }
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let chargeCapacity = 1000;
     let chargeIncrement = 7;
 
-    async function initializeGameForWallet(walletAddress) {
+    async function initializeGameForWallet() {
         const walletData = await fetchWalletData(telegram_id);
         if (walletData) {
             score = walletData.score;
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (!address) {
             walletConnected = false;
             showWalletModal();
-            disconnectWallet(telegram_id);
+            await disconnectWallet(telegram_id);
         } else {
             walletConnected = true;
             closeWalletModal();
