@@ -1,12 +1,34 @@
+
 document.addEventListener('DOMContentLoaded', async function () {
-    let walletConnected = false;
-    let telegram_id = null;
-
     const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
 
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        telegram_id = tg.initDataUnsafe.user.id;
+    const telegram_id = new URLSearchParams(window.location.search).get('user_id');
+    let walletAddress = '';
+
+    async function updateWalletAddress(address) {
+        await fetch('https://danil1110.github.io/InfinityClicker/update_wallet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ telegram_id, address })
+        });
     }
+
+    async function getUserData() {
+        const response = await fetch(`https://danil1110.github.io/InfinityClicker/get_user_data?telegram_id=${telegram_id}`);
+        const data = await response.json();
+        if (data) {
+            walletAddress = data.address;
+            // Load other game data and initialize game state
+        } else {
+            console.error('User not found');
+        }
+    }
+
+    await getUserData();
 
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
@@ -22,9 +44,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                     _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
                     console.log(_address);
                     walletConnected = true;
-                    closeWalletModal();
-                    await updateGameData({ telegram_id, address: _address });
-                    initializeGameForWallet();
+                    closeWalletModal(); // Закрытие окна при успешном подключении
+                    initializeGameForWallet(_address);
                 }
             }
         }
@@ -50,35 +71,21 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     };
 
-    let score = 0;
-    let charge = 1000;
-    let clickUpgradeLevel = 1;
-    let clickUpgradeCost = 100;
-    let clickUpgrade = 1;
-    let chargeSpeedLevel = 1;
-    let chargeSpeedCost = 750;
-    let chargeCapacityLevel = 1;
-    let chargeCapacityCost = 500;
-    let chargeSpeed = 2000;
-    let chargeCapacity = 1000;
-    let chargeIncrement = 7;
+    let score = parseInt(localStorage.getItem('score') || '0'); // Загружаем состояние из localStorage
+    let charge = parseInt(localStorage.getItem('charge') || '1000');
+    let clickUpgradeLevel = parseInt(localStorage.getItem('clickUpgradeLevel') || '1');
+    let clickUpgradeCost = parseInt(localStorage.getItem('clickUpgradeCost') || '100');
+    let clickUpgrade = parseInt(localStorage.getItem('clickUpgrade') || '1');
+    let chargeSpeedLevel = parseInt(localStorage.getItem('chargeSpeedLevel') || '1');
+    let chargeSpeedCost = parseInt(localStorage.getItem('chargeSpeedCost') || '750');
+    let chargeCapacityLevel = parseInt(localStorage.getItem('chargeCapacityLevel') || '1');
+    let chargeCapacityCost = parseInt(localStorage.getItem('chargeCapacityCost') || '500');
+    let chargeSpeed = parseInt(localStorage.getItem('chargeSpeed') || '2000');
+    let chargeCapacity = parseInt(localStorage.getItem('chargeCapacity') || '1000');
+    let chargeIncrement = parseInt(localStorage.getItem('chargeIncrement') || '7');
 
-    async function initializeGameForWallet() {
-        const walletData = await fetchGameData(telegram_id);
-        if (walletData) {
-            score = walletData.score;
-            charge = walletData.charge;
-            clickUpgradeLevel = walletData.click_upgrade_level;
-            clickUpgradeCost = walletData.click_upgrade_cost;
-            clickUpgrade = walletData.click_upgrade;
-            chargeSpeedLevel = walletData.charge_speed_level;
-            chargeSpeedCost = walletData.charge_speed_cost;
-            chargeCapacityLevel = walletData.charge_capacity_level;
-            chargeCapacityCost = walletData.charge_capacity_cost;
-            chargeSpeed = walletData.charge_speed;
-            chargeCapacity = walletData.charge_capacity;
-            chargeIncrement = walletData.charge_increment;
-        }
+    function initializeGameForWallet(walletAddress) {
+        // Инициализация игры для данного кошелька
         updateGame();
     }
 
@@ -98,7 +105,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             score += clickUpgrade;
             charge -= costPerClick;
             updateGame();
-            await updateGameData({ telegram_id });
         }
     });
 
@@ -107,7 +113,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (!address) {
             walletConnected = false;
             showWalletModal();
-            await updateGameData({ telegram_id, address: null });
         } else {
             walletConnected = true;
             closeWalletModal();
@@ -115,6 +120,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function updateGame() {
+        // Обновляем игру и сохраняем текущее состояние
         scoreDisplay.textContent = `${score}`;
         chargeLabel.textContent = `⚡️ ${charge}/${chargeCapacity}`;
         document.getElementById('clickUpgradeCost').textContent = clickUpgradeCost;
@@ -125,6 +131,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('chargeCapacityLevel').textContent = chargeCapacityLevel;
 
         updateProgressBar();
+        saveGame();
     }
 
     function updateProgressBar() {
@@ -133,28 +140,28 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('progress-container').style.display = 'block';
     }
 
-    async function updateGameData(data) {
-        const response = await fetch('/update_game_data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        return await response.json();
+    function saveGame() {
+        localStorage.setItem('score', score.toString());
+        localStorage.setItem('charge', charge.toString());
+        localStorage.setItem('clickUpgradeLevel', clickUpgradeLevel.toString());
+        localStorage.setItem('clickUpgradeCost', clickUpgradeCost.toString());
+        localStorage.setItem('clickUpgrade', clickUpgrade.toString());
+        localStorage.setItem('chargeSpeedLevel', chargeSpeedLevel.toString());
+        localStorage.setItem('chargeSpeedCost', chargeSpeedCost.toString());
+        localStorage.setItem('chargeCapacityLevel', chargeCapacityLevel.toString());
+        localStorage.setItem('chargeCapacityCost', chargeCapacityCost.toString());
+        localStorage.setItem('chargeSpeed', chargeSpeed.toString());
+        localStorage.setItem('chargeCapacity', chargeCapacity.toString());
+        localStorage.setItem('chargeIncrement', chargeIncrement.toString());
     }
 
-    async function fetchGameData(telegram_id) {
-        const response = await fetch('/get_game_data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ telegram_id })
-        });
-        const result = await response.json();
-        return result.status === 'success' ? result : null;
-    }
+    setInterval(function () {
+        if (walletConnected && charge < chargeCapacity) {
+            charge += chargeIncrement;
+            if (charge > chargeCapacity) charge = chargeCapacity;
+            updateGame();
+        }
+    }, chargeSpeed);
 
     window.resetGame = function () {
         localStorage.clear();
@@ -174,6 +181,69 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('shop-modal').style.display = 'none';
     }
 
+    function checkMaxLevel(buttonId, level) {
+        const button = document.getElementById(buttonId);
+        const costContainerId = buttonId.replace('buy', '') + 'CostContainer'; // Получаем ID контейнера стоимости
+        const costContainer = document.getElementById(costContainerId);
+
+        if (level >= 10) {
+            button.innerHTML = 'Max';
+            button.style.background = 'linear-gradient(to right, yellow, orange)';
+            button.disabled = true;
+            if (costContainer) costContainer.classList.add('hidden'); // Скрываем контейнер цены
+        } else {
+            button.innerHTML = 'Buy';
+            button.style.background = '';
+            button.disabled = false;
+            if (costContainer) costContainer.classList.remove('hidden'); // Показываем контейнер цены
+        }
+    }
+
+    window.buyClickUpgrade = async function () {
+        await checkWalletConnection();
+        if (!walletConnected) {
+            showWalletModal();
+            return;
+        }
+        if (score >= clickUpgradeCost && clickUpgradeLevel < 10) {
+            score -= clickUpgradeCost;
+            clickUpgradeLevel++;
+            clickUpgrade++; // Увеличиваем количество увеличения клика
+            clickUpgradeCost *= 2;
+            updateGame();
+        }
+    }
+
+    window.buyChargeSpeedUpgrade = async function () {
+        await checkWalletConnection();
+        if (!walletConnected) {
+            showWalletModal();
+            return;
+        }
+        if (score >= chargeSpeedCost && chargeSpeedLevel < 10) {
+            score -= chargeSpeedCost;
+            chargeSpeedLevel++;
+            chargeIncrement += 5; // Увеличиваем скорость зарядки
+            chargeSpeedCost *= 2;
+            updateGame();
+        }
+    }
+
+    window.buyChargeCapacityUpgrade = async function () {
+        await checkWalletConnection();
+        if (!walletConnected) {
+            showWalletModal();
+            return;
+        }
+        if (score >= chargeCapacityCost && chargeCapacityLevel < 10) {
+            score -= chargeCapacityCost;
+            chargeCapacityLevel++;
+            chargeCapacity += 250; // Увеличиваем емкость зарядки
+            chargeCapacityCost *= 2;
+            updateGame();
+        }
+    }
+
     function showWalletModal() {
         document.getElementById('wallet-modal').classList.remove('hidden');
         document.getElementById('wallet-modal').style.display = 'block';
@@ -186,5 +256,5 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     document.querySelector('.close-button').addEventListener('click', closeWalletModal);
 
-    initializeGameForWallet();
+    updateGame();
 });
