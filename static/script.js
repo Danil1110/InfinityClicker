@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             colorsSet: {
                 [TON_CONNECT_UI.THEME.DARK]: {
                     connectButton: {
-                        background: 'violet'
+                        background: 'purple'
                     }
                 }
             }
