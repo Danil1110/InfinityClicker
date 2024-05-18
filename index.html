@@ -11,9 +11,11 @@
             font-family: Arial, sans-serif;
             margin: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            position: relative;
         }
         .container {
             text-align: center;
@@ -21,7 +23,6 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative;
         }
         h1 {
             margin-bottom: 20px;
@@ -76,14 +77,14 @@
     </style>
 </head>
 <body>
+    <div id="ton-connect"></div>
+    <div id="wallet-info"></div>
     <div class="container" id="app-container">
         <h1>Welcome to Telegram WebApp</h1>
         <p>User ID: <span id="user_id"></span></p>
         <p>Username: <span id="username"></span></p>
         <p>First Name: <span id="first_name"></span></p>
         <p>Premium User: <span id="is_premium"></span></p>
-        <div id="wallet-info"></div>
-        <div id="ton-connect"></div>
     </div>
     <div id="not-supported">
         <h1>Access Denied</h1>
@@ -152,6 +153,21 @@
                 } else {
                     document.getElementById('wallet-info').innerHTML = 'No wallet connected';
                 }
+            });
+
+            // Обработчик отключения кошелька
+            tonConnectUI.on('disconnect', () => {
+                fetch('/remove_wallet_address', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: user.id
+                    })
+                }).then(() => {
+                    document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
+                });
             });
         });
     </script>
