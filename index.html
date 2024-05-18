@@ -2,6 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Telegram WebApp</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Telegram WebApp</h1>
+        <p>User ID: <span id="user_id"></span></p>
+        <p>Username: <span id="username"></span></p>
+        <p>First Name: <span id="first_name"></span></p>
+        <p>Premium User: <span id="is_premium"></span></p>
+    </div>
+
+    <script>
+        window.Telegram.WebApp.ready();
+        const initData = Telegram.WebApp.initData;
+        const user = Telegram.WebApp.initDataUnsafe.user;
+
+        document.getElementById('user_id').innerText = user.id;
+        document.getElementById('username').innerText = user.username || 'N/A';
+        document.getElementById('first_name').innerText = user.first_name;
+        document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
+    </script>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Infinity Clicker</title>
     <link rel="stylesheet" href="static/styles/style.css">
@@ -51,3 +82,4 @@
     </div>
 </body>
 </html>
+ -->
