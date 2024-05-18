@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Telegram WebApp</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,17 +21,17 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
-        
         h1 {
             margin-bottom: 20px;
-            color: #000000; /* Черный цвет текста */
-            font-weight: bold; /* Жирный текст */
+            color: #000000;
+            font-weight: bold;
         }
         p {
             margin: 10px 0;
-            color: #000000; /* Черный цвет текста */
-            font-weight: bold; /* Жирный текст */
+            color: #000000;
+            font-weight: bold;
         }
         #not-supported {
             display: none;
@@ -42,15 +43,21 @@
         }
         #not-supported > p {
             margin: 10px 0;
-            color: #FFFFFF; /* Белый цвет текста */
-            font-weight: bold; /* Жирный текст */
+            color: #FFFFFF;
+            font-weight: bold;
         }
         #not-supported > h1 {
             margin-bottom: 20px;
-            color: #FFFFFF; /* Белый цвет текста */
-            font-weight: bold; /* Жирный текст */
+            color: #FFFFFF;
+            font-weight: bold;
         }
-        /* Медиа-запросы для адаптации под мобильные устройства */
+        #wallet-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #000000;
+            font-weight: bold;
+        }
         @media (max-width: 600px) {
             .container, #not-supported {
                 width: 90%;
@@ -72,6 +79,8 @@
         <p>Username: <span id="username"></span></p>
         <p>First Name: <span id="first_name"></span></p>
         <p>Premium User: <span id="is_premium"></span></p>
+        <div id="wallet-info">Connecting wallet...</div>
+        <div id="ton-connect"></div>
     </div>
     <div id="not-supported">
         <h1>Access Denied</h1>
@@ -100,6 +109,43 @@
             document.getElementById('username').innerText = user.username || 'N/A';
             document.getElementById('first_name').innerText = user.first_name;
             document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
+
+            const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
+                buttonRootId: 'ton-connect'
+            });
+
+            async function getAddressWallet() {
+                let _address = '';
+                if (tonConnectUI) {
+                    let res = await tonConnectUI.connectionRestored;
+                    if (res || tonConnectUI?.account?.address) {
+                        if (tonConnectUI?.account?.address) {
+                            _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
+                            console.log(_address);
+                        }
+                    }
+                }
+                return _address;
+            }
+
+            getAddressWallet().then(address => {
+                document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
+                // Отправляем данные на сервер
+                fetch('/save_user_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: user.id,
+                        username: user.username,
+                        first_name: user.first_name,
+                        is_premium: user.is_premium,
+                        wallet_address: address
+                    })
+                });
+            });
         });
     </script>
 </body>
