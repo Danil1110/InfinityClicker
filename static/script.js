@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', async function () {
     let walletConnected = false; 
     let telegram_id = null;
@@ -135,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function updateWalletData(telegram_id) {
         try {
-            let response = await fetch('https://danil1110.github.io/InfinityClicker/update_wallet_data', {
+            let response = await fetch('/update_wallet_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -165,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function fetchWalletData(telegram_id) {
         try {
-            let response = await fetch('https://danil1110.github.io/InfinityClicker/get_wallet_data', {
+            let response = await fetch('/get_wallet_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -182,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function connectWallet(telegram_id, address) {
         try {
-            let response = await fetch('https://danil1110.github.io/InfinityClicker/connect_wallet', {
+            let response = await fetch('/connect_wallet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -198,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function disconnectWallet(telegram_id) {
         try {
-            let response = await fetch('https://danil1110.github.io/InfinityClicker/disconnect_wallet', {
+            let response = await fetch('/disconnect_wallet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
