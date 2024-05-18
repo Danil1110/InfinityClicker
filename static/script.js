@@ -1,6 +1,5 @@
-
 document.addEventListener('DOMContentLoaded', async function () {
-    let walletConnected = false; 
+    let walletConnected = false;
     let telegram_id = null;
 
     const tg = window.Telegram.WebApp;
@@ -99,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             score += clickUpgrade;
             charge -= costPerClick;
             updateGame();
-            await updateWalletData(telegram_id);
+            await updateGameData(telegram_id);
         }
     });
 
@@ -134,9 +133,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('progress-container').style.display = 'block';
     }
 
-    async function updateWalletData(telegram_id) {
+    async function updateGameData(telegram_id) {
         try {
-            let response = await fetch('/update_wallet_data', {
+            let response = await fetch('/update_game_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -154,7 +153,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                     charge_capacity_cost: chargeCapacityCost,
                     charge_speed: chargeSpeed,
                     charge_capacity: chargeCapacity,
-                    charge_increment: chargeIncrement
+                    charge_increment: chargeIncrement,
+                    address: await getAddressWallet()
                 })
             });
             let data = await response.json();
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function fetchWalletData(telegram_id) {
         try {
-            let response = await fetch('/get_wallet_data', {
+            let response = await fetch('/get_game_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function connectWallet(telegram_id, address) {
         try {
-            let response = await fetch('/connect_wallet', {
+            let response = await fetch('/update_game_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -199,12 +199,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function disconnectWallet(telegram_id) {
         try {
-            let response = await fetch('/disconnect_wallet', {
+            let response = await fetch('/update_game_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ telegram_id })
+                body: JSON.stringify({ telegram_id, address: null })
             });
             let data = await response.json();
             console.log(data.message);
