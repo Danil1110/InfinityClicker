@@ -51,10 +51,13 @@
             color: #FFFFFF;
             font-weight: bold;
         }
-        #wallet-info {
+        #ton-connect {
             position: absolute;
             top: 10px;
             right: 10px;
+        }
+        #wallet-info {
+            margin-top: 20px;
             color: #000000;
             font-weight: bold;
         }
@@ -79,7 +82,7 @@
         <p>Username: <span id="username"></span></p>
         <p>First Name: <span id="first_name"></span></p>
         <p>Premium User: <span id="is_premium"></span></p>
-        <div id="wallet-info">Connecting wallet...</div>
+        <div id="wallet-info"></div>
         <div id="ton-connect"></div>
     </div>
     <div id="not-supported">
@@ -130,21 +133,25 @@
             }
 
             getAddressWallet().then(address => {
-                document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
-                // Отправляем данные на сервер
-                fetch('/save_user_data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        user_id: user.id,
-                        username: user.username,
-                        first_name: user.first_name,
-                        is_premium: user.is_premium,
-                        wallet_address: address
-                    })
-                });
+                if (address) {
+                    document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
+                    // Отправляем данные на сервер
+                    fetch('/save_user_data', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: user.id,
+                            username: user.username,
+                            first_name: user.first_name,
+                            is_premium: user.is_premium,
+                            wallet_address: address
+                        })
+                    });
+                } else {
+                    document.getElementById('wallet-info').innerHTML = 'No wallet connected';
+                }
             });
         });
     </script>
