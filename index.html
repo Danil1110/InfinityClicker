@@ -32,26 +32,47 @@
             color: #000000; /* Черный цвет текста */
             font-weight: bold; /* Жирный текст */
         }
+        #not-supported {
+            display: none;
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="app-container">
         <h1>Welcome to Telegram WebApp</h1>
         <p>User ID: <span id="user_id"></span></p>
         <p>Username: <span id="username"></span></p>
         <p>First Name: <span id="first_name"></span></p>
         <p>Premium User: <span id="is_premium"></span></p>
     </div>
+    <div id="not-supported">
+        <h1>Access Denied</h1>
+        <p>This WebApp is only accessible on mobile devices (iOS/Android) and through the Telegram app.</p>
+    </div>
 
     <script>
-        window.Telegram.WebApp.ready();
-        const initData = Telegram.WebApp.initData;
-        const user = Telegram.WebApp.initDataUnsafe.user;
+        function isMobileDevice() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
 
-        document.getElementById('user_id').innerText = user.id;
-        document.getElementById('username').innerText = user.username || 'N/A';
-        document.getElementById('first_name').innerText = user.first_name;
-        document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!window.Telegram.WebApp || !isMobileDevice()) {
+                document.getElementById('app-container').style.display = 'none';
+                document.getElementById('not-supported').style.display = 'block';
+                return;
+            }
+
+            window.Telegram.WebApp.ready();
+            const initData = Telegram.WebApp.initData;
+            const user = Telegram.WebApp.initDataUnsafe.user;
+
+            document.getElementById('user_id').innerText = user.id;
+            document.getElementById('username').innerText = user.username || 'N/A';
+            document.getElementById('first_name').innerText = user.first_name;
+            document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
+        });
     </script>
 </body>
 </html>
