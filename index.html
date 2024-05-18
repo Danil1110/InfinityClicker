@@ -2,29 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Page</title>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const userId = new URLSearchParams(window.location.search).get('user_id');
-            if (userId) {
-                document.getElementById("user_id").innerText = userId;
-            } else {
-                document.getElementById("user_id").innerText = "No User ID in URL";
-            }
-        });
-    </script>
-</head>
-<body>
-    <h1>Welcome to the Game</h1>
-    <p>Your User ID: <span id="user_id">Loading...</span></p>
-</body>
-</html>
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Infinity Clicker</title>
     <link rel="stylesheet" href="static/styles/style.css">
@@ -75,4 +52,4 @@
     </div>
 </body>
 </html>
- -->
+
