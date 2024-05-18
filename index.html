@@ -5,32 +5,25 @@
     <title>Game Page</title>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Запрос ID пользователя у сервера
-            fetch('http://https://danil1110.github.io/InfinityClicker/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ user_id: getUserIdFromLocalStorage() })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("user_id").innerText = data.user_id;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById("user_id").innerText = "Ошибка получения User ID";
-            });
-        });
-
-        function getUserIdFromLocalStorage() {
-            // Сохраняем user_id в localStorage при первом открытии
-            if (!localStorage.getItem('user_id')) {
-                const user_id = new URLSearchParams(window.location.search).get('user_id');
-                localStorage.setItem('user_id', user_id);
+            const userId = new URLSearchParams(window.location.search).get('user_id');
+            if (userId) {
+                fetch(`https://danil1110.github.io/InfinityClicker/get_user_id?user_id=${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.user_id) {
+                            document.getElementById("user_id").innerText = data.user_id;
+                        } else {
+                            document.getElementById("user_id").innerText = "User ID not found";
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById("user_id").innerText = "Error fetching User ID";
+                    });
+            } else {
+                document.getElementById("user_id").innerText = "No User ID in URL";
             }
-            return localStorage.getItem('user_id');
-        }
+        });
     </script>
 </head>
 <body>
