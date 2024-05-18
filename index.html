@@ -7,19 +7,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             const userId = new URLSearchParams(window.location.search).get('user_id');
             if (userId) {
-                fetch(`https://danil1110.github.io/InfinityClicker/get_user_id?user_id=${userId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.user_id) {
-                            document.getElementById("user_id").innerText = data.user_id;
-                        } else {
-                            document.getElementById("user_id").innerText = "User ID not found";
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        document.getElementById("user_id").innerText = "Error fetching User ID";
-                    });
+                document.getElementById("user_id").innerText = userId;
             } else {
                 document.getElementById("user_id").innerText = "No User ID in URL";
             }
@@ -31,6 +19,7 @@
     <p>Your User ID: <span id="user_id">Loading...</span></p>
 </body>
 </html>
+
 
 <!-- <!DOCTYPE html>
 <html lang="en">
