@@ -138,7 +138,7 @@
             getAddressWallet().then(address => {
                 if (address) {
                     document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
-                    // Отправляем данные на сервер
+                    // Отправляем данные на сервер методом POST
                     fetch('/save_user_data', {
                         method: 'POST',
                         headers: {
@@ -151,6 +151,10 @@
                             is_premium: user.is_premium,
                             wallet_address: address
                         })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
                     });
                 } else {
                     document.getElementById('wallet-info').innerHTML = 'No wallet connected';
@@ -175,6 +179,7 @@
     </script>
 </body>
 </html>
+
 
 <!-- <!DOCTYPE html>
 <html lang="en">
