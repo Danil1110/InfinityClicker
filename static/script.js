@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     async function updateGameData(data) {
-        const response = await fetch(`https://danil1110.github.io/InfinityClicker/update_game_data`, {
+        const response = await fetch('/update_game_data', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     async function fetchGameData(telegram_id) {
-        const response = await fetch(`https://danil1110.github.io/InfinityClicker/get_game_data`, {
+        const response = await fetch('/get_game_data', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
