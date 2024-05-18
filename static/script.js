@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     console.log(_address);
                     walletConnected = true;
                     closeWalletModal();
-                    await connectWallet(telegram_id, _address);
+                    await updateGameData({ telegram_id, address: _address });
                     initializeGameForWallet();
                 }
             }
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let chargeIncrement = 7;
 
     async function initializeGameForWallet() {
-        const walletData = await fetchWalletData(telegram_id);
+        const walletData = await fetchGameData(telegram_id);
         if (walletData) {
             score = walletData.score;
             charge = walletData.charge;
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             score += clickUpgrade;
             charge -= costPerClick;
             updateGame();
-            await updateGameData(telegram_id);
+            await updateGameData({ telegram_id });
         }
     });
 
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (!address) {
             walletConnected = false;
             showWalletModal();
-            await disconnectWallet(telegram_id);
+            await updateGameData({ telegram_id, address: null });
         } else {
             walletConnected = true;
             closeWalletModal();
@@ -133,84 +133,27 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('progress-container').style.display = 'block';
     }
 
-    async function updateGameData(telegram_id) {
-        try {
-            let response = await fetch('/update_game_data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    telegram_id,
-                    score,
-                    charge,
-                    click_upgrade_level: clickUpgradeLevel,
-                    click_upgrade_cost: clickUpgradeCost,
-                    click_upgrade: clickUpgrade,
-                    charge_speed_level: chargeSpeedLevel,
-                    charge_speed_cost: chargeSpeedCost,
-                    charge_capacity_level: chargeCapacityLevel,
-                    charge_capacity_cost: chargeCapacityCost,
-                    charge_speed: chargeSpeed,
-                    charge_capacity: chargeCapacity,
-                    charge_increment: chargeIncrement,
-                    address: await getAddressWallet()
-                })
-            });
-            let data = await response.json();
-            console.log(data.message);
-        } catch (error) {
-            console.error('Error:', error);
-        }
+    async function updateGameData(data) {
+        const response = await fetch(`https://danil1110.github.io/InfinityClicker/update_game_data`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        return await response.json();
     }
 
-    async function fetchWalletData(telegram_id) {
-        try {
-            let response = await fetch('/get_game_data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ telegram_id })
-            });
-            let data = await response.json();
-            return data.status === 'success' ? data : null;
-        } catch (error) {
-            console.error('Error:', error);
-            return null;
-        }
-    }
-
-    async function connectWallet(telegram_id, address) {
-        try {
-            let response = await fetch('/update_game_data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ telegram_id, address })
-            });
-            let data = await response.json();
-            console.log(data.message);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    async function disconnectWallet(telegram_id) {
-        try {
-            let response = await fetch('/update_game_data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ telegram_id, address: null })
-            });
-            let data = await response.json();
-            console.log(data.message);
-        } catch (error) {
-            console.error('Error:', error);
-        }
+    async function fetchGameData(telegram_id) {
+        const response = await fetch(`https://danil1110.github.io/InfinityClicker/get_game_data`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ telegram_id })
+        });
+        const result = await response.json();
+        return result.status === 'success' ? result : null;
     }
 
     window.resetGame = function () {
