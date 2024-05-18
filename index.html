@@ -8,7 +8,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffffff; /* Белый фон */
             margin: 0;
             display: flex;
             justify-content: center;
@@ -34,8 +33,24 @@
         }
         #not-supported {
             display: none;
-            color: red;
-            font-weight: bold;
+            color: white;
+            background-color: black;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        /* Медиа-запросы для адаптации под мобильные устройства */
+        @media (max-width: 600px) {
+            .container, #not-supported {
+                width: 90%;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            p {
+                font-size: 1em;
+            }
         }
     </style>
 </head>
@@ -59,6 +74,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             if (!window.Telegram.WebApp || !isMobileDevice()) {
+                document.body.style.backgroundColor = 'black';
                 document.getElementById('app-container').style.display = 'none';
                 document.getElementById('not-supported').style.display = 'block';
                 return;
@@ -76,7 +92,6 @@
     </script>
 </body>
 </html>
-
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
