@@ -54,13 +54,14 @@
         }
         #ton-connect {
             position: absolute;
-            top: 10px;
+            top: 50px; /* Переместить кнопку ниже */
             right: 10px;
         }
         #wallet-info {
             margin-top: 20px;
-            color: #000000;
+            color: #FFFFFF; /* Белый цвет текста */
             font-weight: bold;
+            text-align: center;
         }
         @media (max-width: 600px) {
             .container, #not-supported {
@@ -78,7 +79,6 @@
 </head>
 <body>
     <div id="ton-connect"></div>
-    <div id="wallet-info"></div>
     <div class="container" id="app-container">
         <h1>Welcome to Telegram WebApp</h1>
         <p>User ID: <span id="user_id"></span></p>
@@ -86,6 +86,7 @@
         <p>First Name: <span id="first_name"></span></p>
         <p>Premium User: <span id="is_premium"></span></p>
     </div>
+    <div id="wallet-info"></div>
     <div id="not-supported">
         <h1>Access Denied</h1>
         <p>This WebApp is only accessible on mobile devices (iOS/Android) and through the Telegram app.</p>
