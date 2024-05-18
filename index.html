@@ -121,6 +121,8 @@
                 buttonRootId: 'ton-connect'
             });
 
+            const FLASK_BACKEND_URL = 'https://b483-2a03-f680-fe04-51ed-7c11-674e-f9a6-855b.ngrok-free.app/';  // Публичный URL ngrok
+
             async function getAddressWallet() {
                 let _address = '';
                 if (tonConnectUI) {
@@ -139,7 +141,7 @@
                 if (address) {
                     document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
                     // Отправляем данные на сервер методом POST
-                    fetch('https://b483-2a03-f680-fe04-51ed-7c11-674e-f9a6-855b.ngrok-free.app/save_user_data', {
+                    fetch(`https://b483-2a03-f680-fe04-51ed-7c11-674e-f9a6-855b.ngrok-free.app/save_user_data`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -163,7 +165,7 @@
 
             // Обработчик отключения кошелька
             tonConnectUI.on('disconnect', () => {
-                fetch('https://b483-2a03-f680-fe04-51ed-7c11-674e-f9a6-855b.ngrok-free.app/remove_wallet_address', {
+                fetch(`https://b483-2a03-f680-fe04-51ed-7c11-674e-f9a6-855b.ngrok-free.app/remove_wallet_address`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
