@@ -75,6 +75,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (!window.Telegram.WebApp || !isMobileDevice()) {
                 document.body.style.backgroundColor = 'black';
+                document.body.style.color = 'white';
                 document.getElementById('app-container').style.display = 'none';
                 document.getElementById('not-supported').style.display = 'block';
                 return;
@@ -92,6 +93,8 @@
     </script>
 </body>
 </html>
+
+
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
