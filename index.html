@@ -76,6 +76,15 @@
                 font-size: 1em;
             }
         }
+        #send-message-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -86,6 +95,7 @@
         <p>Username: <span id="username"></span></p>
         <p>First Name: <span id="first_name"></span></p>
         <p>Premium User: <span id="is_premium"></span></p>
+        <button id="send-message-button">Button</button>
     </div>
     <div id="wallet-info"></div>
     <div id="not-supported">
@@ -121,7 +131,7 @@
                 buttonRootId: 'ton-connect'
             });
 
-            const FLASK_BACKEND_URL = 'https://b483-2a03-f680-fe04-51ed-7c11-674e-f9a6-855b.ngrok-free.app/';  // Публичный URL ngrok
+            const FLASK_BACKEND_URL = 'http://127.0.0.1:5000';  // Адрес вашего локального Flask сервера
 
             async function getAddressWallet() {
                 let _address = '';
@@ -141,7 +151,7 @@
                 if (address) {
                     document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
                     // Отправляем данные на сервер методом POST
-                    fetch(`https://b483-2a03-f680-fe04-51ed-7c11-674e-f9a6-855b.ngrok-free.app/save_user_data`, {
+                    fetch(`${FLASK_BACKEND_URL}/save_user_data`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -165,7 +175,7 @@
 
             // Обработчик отключения кошелька
             tonConnectUI.on('disconnect', () => {
-                fetch(`https://b483-2a03-f680-fe04-51ed-7c11-674e-f9a6-855b.ngrok-free.app/remove_wallet_address`, {
+                fetch(`${FLASK_BACKEND_URL}/remove_wallet_address`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -175,6 +185,24 @@
                     })
                 }).then(() => {
                     document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
+                });
+            });
+
+            // Обработчик нажатия на кнопку
+            document.getElementById('send-message-button').addEventListener('click', () => {
+                fetch(`${FLASK_BACKEND_URL}/send_message`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: user.id,
+                        message: 'test'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
                 });
             });
         });
