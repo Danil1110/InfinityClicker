@@ -2,6 +2,215 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Telegram WebApp</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #000000;
+            font-weight: bold;
+        }
+        p {
+            margin: 10px 0;
+            color: #000000;
+            font-weight: bold;
+        }
+        #not-supported {
+            display: none;
+            color: white;
+            background-color: black;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #not-supported > p {
+            margin: 10px 0;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+        #not-supported > h1 {
+            margin-bottom: 20px;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+        #ton-connect {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+        }
+        #wallet-info {
+            margin-top: 20px;
+            color: #000000;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        @media (max-width: 600px) {
+            .container, #not-supported {
+                width: 90%;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            p {
+                font-size: 1em;
+            }
+        }
+        #send-message-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="ton-connect"></div>
+    <div class="container" id="app-container">
+        <h1>Welcome to Telegram WebApp</h1>
+        <p>User ID: <span id="user_id"></span></p>
+        <p>Username: <span id="username"></span></p>
+        <p>First Name: <span id="first_name"></span></p>
+        <p>Premium User: <span id="is_premium"></span></p>
+        <button id="send-message-button">Send Message</button>
+    </div>
+    <div id="wallet-info"></div>
+    <div id="not-supported">
+        <h1>Access Denied</h1>
+        <p>This WebApp is only accessible on mobile devices (iOS/Android) and through the Telegram app.</p>
+    </div>
+
+    <script>
+        function isMobileDevice() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!window.Telegram.WebApp || !isMobileDevice()) {
+                document.body.style.backgroundColor = 'black';
+                document.body.style.color = 'white';
+                document.getElementById('app-container').style.display = 'none';
+                document.getElementById('not-supported').style.display = 'block';
+                return;
+            }
+
+            window.Telegram.WebApp.ready();
+            const initData = Telegram.WebApp.initData;
+            const user = Telegram.WebApp.initDataUnsafe.user;
+
+            document.getElementById('user_id').innerText = user.id;
+            document.getElementById('username').innerText = user.username || 'N/A';
+            document.getElementById('first_name').innerText = user.first_name;
+            document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
+
+            const botToken = '6513736156:AAEP4uwZQLDcQxk6C8KV8YDMWlvb_dri-0s';
+
+            const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
+                buttonRootId: 'ton-connect'
+            });
+
+            async function getAddressWallet() {
+                let _address = '';
+                if (tonConnectUI) {
+                    let res = await tonConnectUI.connectionRestored;
+                    if (res || tonConnectUI?.account?.address) {
+                        if (tonConnectUI?.account?.address) {
+                            _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
+                            console.log(_address);
+                            // Сохранение данных в базе через бота
+                            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    chat_id: user.id,
+                                    text: `Save user data: User ID: ${user.id}, Username: ${user.username}, First Name: ${user.first_name}, Is Premium: ${user.is_premium}, Wallet Address: ${_address}`
+                                }),
+                            });
+                        }
+                    }
+                }
+                return _address;
+            }
+
+            getAddressWallet().then(address => {
+                if (address) {
+                    document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
+                } else {
+                    document.getElementById('wallet-info').innerHTML = 'No wallet connected';
+                }
+            });
+
+            // Обработчик отключения кошелька
+            tonConnectUI.on('disconnect', () => {
+                document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: user.id,
+                        text: `Remove wallet address for user ID: ${user.id}`
+                    }),
+                });
+            });
+
+            // Обработчик нажатия на кнопку
+            document.getElementById('send-message-button').addEventListener('click', () => {
+                const message = 'Hello from WebApp!';
+
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: user.id,
+                        text: message
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <title>Telegram Mini App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -61,194 +270,8 @@
     </script>
 </body>
 </html>
+ -->
 
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Telegram WebApp</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            position: relative;
-        }
-        .container {
-            text-align: center;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            margin-bottom: 20px;
-            color: #000000;
-            font-weight: bold;
-        }
-        p {
-            margin: 10px 0;
-            color: #000000;
-            font-weight: bold;
-        }
-        #not-supported {
-            display: none;
-            color: white;
-            background-color: black;
-            text-align: center;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        #not-supported > p {
-            margin: 10px 0;
-            color: #FFFFFF;
-            font-weight: bold;
-        }
-        #not-supported > h1 {
-            margin-bottom: 20px;
-            color: #FFFFFF;
-            font-weight: bold;
-        }
-        #ton-connect {
-            position: absolute;
-            top: 50px;
-            right: 10px;
-        }
-        #wallet-info {
-            margin-top: 20px;
-            color: #FFFFFF;
-            font-weight: bold;
-            text-align: center;
-            font-size: 0.8em;
-        }
-        @media (max-width: 600px) {
-            .container, #not-supported {
-                width: 90%;
-                padding: 10px;
-            }
-            h1 {
-                font-size: 1.5em;
-            }
-            p {
-                font-size: 1em;
-            }
-        }
-        #send-message-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <div id="ton-connect"></div>
-    <div class="container" id="app-container">
-        <h1>Welcome to Telegram WebApp</h1>
-        <p>User ID: <span id="user_id"></span></p>
-        <p>Username: <span id="username"></span></p>
-        <p>First Name: <span id="first_name"></span></p>
-        <p>Premium User: <span id="is_premium"></span></p>
-        <button id="send-message-button">Button</button>
-    </div>
-    <div id="wallet-info"></div>
-    <div id="not-supported">
-        <h1>Access Denied</h1>
-        <p>This WebApp is only accessible on mobile devices (iOS/Android) and through the Telegram app.</p>
-    </div>
-
-    <script>
-        function isMobileDevice() {
-            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            if (!window.Telegram.WebApp || !isMobileDevice()) {
-                document.body.style.backgroundColor = 'black';
-                document.body.style.color = 'white';
-                document.getElementById('app-container').style.display = 'none';
-                document.getElementById('not-supported').style.display = 'block';
-                return;
-            }
-
-            window.Telegram.WebApp.ready();
-            const initData = Telegram.WebApp.initData;
-            const user = Telegram.WebApp.initDataUnsafe.user;
-
-            document.getElementById('user_id').innerText = user.id;
-            document.getElementById('username').innerText = user.username || 'N/A';
-            document.getElementById('first_name').innerText = user.first_name;
-            document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
-
-            const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
-                buttonRootId: 'ton-connect'
-            });
-
-            async function getAddressWallet() {
-                let _address = '';
-                if (tonConnectUI) {
-                    let res = await tonConnectUI.connectionRestored;
-                    if (res || tonConnectUI?.account?.address) {
-                        if (tonConnectUI?.account?.address) {
-                            _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
-                            console.log(_address);
-                        }
-                    }
-                }
-                return _address;
-            }
-
-            getAddressWallet().then(address => {
-                if (address) {
-                    document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
-                } else {
-                    document.getElementById('wallet-info').innerHTML = 'No wallet connected';
-                }
-            });
-
-            // Обработчик отключения кошелька
-            tonConnectUI.on('disconnect', () => {
-                document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
-            });
-
-            // Обработчик нажатия на кнопку
-            document.getElementById('send-message-button').addEventListener('click', () => {
-                const botToken = '6513736156:AAEP4uwZQLDcQxk6C8KV8YDMWlvb_dri-0s';
-                const chatId = user.id;
-                const message = 'test';
-
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: message
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                });
-            });
-        });
-    </script>
-</body>
-</html> -->
 
 
 <!-- <!DOCTYPE html>
