@@ -188,7 +188,7 @@
                 const chatId = tg.initDataUnsafe.user.id;
                 const message = 'test';
 
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                fetch(`https://api.telegram.org/bot${botToken}/send_test_msg`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
