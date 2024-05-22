@@ -182,23 +182,28 @@
                 });
             });
 
-            // Обработчик нажатия на кнопку
-            document.getElementById('send-message-button').addEventListener('click', async () => {
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        chat_id: user.id,
-                        text: 'Test'
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
+            // Асинхронная функция для отправки сообщения
+            async function sendMessage() {
+                try {
+                    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            chat_id: user.id,
+                            text: 'Test'
+                        })
+                    });
+                    const data = await response.json();
                     console.log(data);
-                });
-            });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+
+            // Обработчик нажатия на кнопку
+            document.getElementById('send-message-button').addEventListener('click', sendMessage);
         });
     </script>
 </body>
