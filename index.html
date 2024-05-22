@@ -95,7 +95,7 @@
         <p>Username: <span id="username"></span></p>
         <p>First Name: <span id="first_name"></span></p>
         <p>Premium User: <span id="is_premium"></span></p>
-        <button onclick="sendDataToBot()">Send Message</button>
+        <button id="send-message-button">Send Message</button>
     </div>
     <div id="wallet-info"></div>
     <div id="not-supported">
@@ -183,7 +183,7 @@
 
             // Обработчик нажатия на кнопку
             document.getElementById('send-message-button').addEventListener('click', sendDataToBot);
-            
+
             function sendDataToBot() {
                 const chatId = tg.initDataUnsafe.user.id;
                 const message = 'test';
@@ -209,6 +209,7 @@
     </script>
 </body>
 </html>
+
 
 <!-- <!DOCTYPE html>
 <html lang="en">
