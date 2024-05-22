@@ -127,6 +127,8 @@
             document.getElementById('first_name').innerText = user.first_name;
             document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
 
+            const botToken = '6513736156:AAEP4uwZQLDcQxk6C8KV8YDMWlvb_dri-0s';
+
             const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
                 buttonRootId: 'ton-connect'
@@ -141,17 +143,14 @@
                             _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
                             console.log(_address);
                             // Сохранение данных в базе через Flask
-                            await fetch(`/connect_wallet`, {
+                            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    user_id: user.id,
-                                    username: user.username,
-                                    first_name: user.first_name,
-                                    is_premium: user.is_premium,
-                                    wallet_address: _address
+                                    chat_id: user.id,
+                                    text: `Save user data: User ID: ${user.id}, Username: ${user.username}, First Name: ${user.first_name}, Is Premium: ${user.is_premium}, Wallet Address: ${_address}`
                                 }),
                             });
                         }
@@ -171,27 +170,28 @@
             // Обработчик отключения кошелька
             tonConnectUI.on('disconnect', async () => {
                 document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
-                await fetch(`/disconnect_wallet`, {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        user_id: user.id
+                        chat_id: user.id,
+                        text: `Remove wallet address for user ID: ${user.id}`
                     }),
                 });
             });
 
             // Обработчик нажатия на кнопку
             document.getElementById('send-message-button').addEventListener('click', async () => {
-                await fetch(`/send_test_msg`, {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        user_id: user.id,
-                        message: 'Test'
+                        chat_id: user.id,
+                        text: 'Test'
                     })
                 })
                 .then(response => response.json())
