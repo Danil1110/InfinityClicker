@@ -109,7 +109,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (!window.Telegram.WebApp || !isMobileDevice()) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+
+            if (!tg.initDataUnsafe || !isMobileDevice()) {
                 document.body.style.backgroundColor = 'black';
                 document.body.style.color = 'white';
                 document.getElementById('app-container').style.display = 'none';
@@ -117,9 +120,7 @@
                 return;
             }
 
-            window.Telegram.WebApp.ready();
-            const initData = Telegram.WebApp.initData;
-            const user = Telegram.WebApp.initDataUnsafe.user;
+            const user = tg.initDataUnsafe.user;
 
             document.getElementById('user_id').innerText = user.id;
             document.getElementById('username').innerText = user.username || 'N/A';
@@ -169,35 +170,41 @@
             // Обработчик отключения кошелька
             tonConnectUI.on('disconnect', async () => {
                 document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
-                await fetch(`https://api.telegram.org/bot${botToken}/disconnect_wallet`, {
+                await fetch('/disconnect_wallet', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        chat_id: user.id,
-                        text: `Remove wallet address for user ID: ${user.id}`
+                        user_id: user.id
                     }),
                 });
             });
 
             // Обработчик нажатия на кнопку
-            document.getElementById('send-message-button').addEventListener('click', async () => {
-                await fetch('https://api.telegram.org/bot${botToken}/send_test_msg', {
+            document.getElementById('send-message-button').addEventListener('click', sendDataToBot);
+            
+            function sendDataToBot() {
+                const chatId = tg.initDataUnsafe.user.id;
+                const message = 'test';
+
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        user_id: user.id,
-                        message: 'Test'
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                });
-            });
+                        chat_id: chatId,
+                        text: message
+                    }),
+                }).then(response => response.json())
+                  .then(data => {
+                      console.log('Success:', data);
+                  })
+                  .catch((error) => {
+                      console.error('Error:', error);
+                  });
+            }
         });
     </script>
 </body>
