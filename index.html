@@ -183,14 +183,14 @@
 
             // Обработчик нажатия на кнопку
             document.getElementById('send-message-button').addEventListener('click', async () => {
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                await fetch('/send_test_msg', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        chat_id: user.id,
-                        text: 'Test'
+                        user_id: user.id,
+                        message: 'Test'
                     })
                 })
                 .then(response => response.json())
@@ -202,7 +202,6 @@
     </script>
 </body>
 </html>
-
 
 <!-- <!DOCTYPE html>
 <html lang="en">
