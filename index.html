@@ -183,8 +183,6 @@
 
             // Обработчик нажатия на кнопку
             document.getElementById('send-message-button').addEventListener('click', () => {
-                const message = 'Hello from WebApp!';
-
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: {
@@ -192,7 +190,7 @@
                     },
                     body: JSON.stringify({
                         chat_id: user.id,
-                        text: message
+                        text: 'Test'
                     })
                 })
                 .then(response => response.json())
