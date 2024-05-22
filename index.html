@@ -142,7 +142,7 @@
                             _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
                             console.log(_address);
                             // Сохранение данных в базе через бота
-                            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -167,9 +167,9 @@
             });
 
             // Обработчик отключения кошелька
-            tonConnectUI.on('disconnect', () => {
+            tonConnectUI.on('disconnect', async () => {
                 document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -182,8 +182,8 @@
             });
 
             // Обработчик нажатия на кнопку
-            document.getElementById('send-message-button').addEventListener('click', () => {
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            document.getElementById('send-message-button').addEventListener('click', async () => {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -202,7 +202,6 @@
     </script>
 </body>
 </html>
-
 
 
 <!-- <!DOCTYPE html>
