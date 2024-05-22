@@ -169,7 +169,7 @@
             // Обработчик отключения кошелька
             tonConnectUI.on('disconnect', async () => {
                 document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                await fetch(`https://api.telegram.org/bot${botToken}/disconnect_wallet`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -183,7 +183,7 @@
 
             // Обработчик нажатия на кнопку
             document.getElementById('send-message-button').addEventListener('click', async () => {
-                await fetch('/send_test_msg', {
+                await fetch('https://api.telegram.org/bot${botToken}/send_test_msg', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
