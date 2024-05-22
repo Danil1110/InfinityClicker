@@ -3,23 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Telegram Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Telegram Mini App</h1>
     <button onclick="sendDataToBot()">Send Data to Bot</button>
 
     <script>
         const tg = window.Telegram.WebApp;
+        tg.ready();
 
         function sendDataToBot() {
-            const data = {message: 'Hello from Mini App'};
-            fetch('https://danil1110.github.io/InfinityClicker/webhook', {
+            const botToken = '6513736156:AAEP4uwZQLDcQxk6C8KV8YDMWlvb_dri-0s';
+            const chatId = tg.initDataUnsafe.user.id;  // Получение user id из инициализационных данных
+            const message = 'test';
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                }),
             }).then(response => response.json())
               .then(data => {
                   console.log('Success:', data);
@@ -31,6 +61,7 @@
     </script>
 </body>
 </html>
+
 
 
 <!-- <!DOCTYPE html>
