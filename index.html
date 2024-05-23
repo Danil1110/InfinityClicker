@@ -173,27 +173,30 @@
             });
 
             // Обработчик отключения кошелька
+            // Обработчик отключения кошелька
             async function handleDisconnect() {
-                try {
-                    await fetch(`${ngrokUrl}/disconnect_wallet`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            user_id: user.id,
-                        }),
-                    });
-                    document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
-                } catch (error) {
-                    console.error('Error:', error);
+                if (!tonConnectUI) {
+                    try {
+                        await fetch(`${ngrokUrl}/disconnect_wallet`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                user_id: user.id,
+                            }),
+                        });
+                        document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
                 }
             }
 
             tonConnectUI.on('disconnect', handleDisconnect);
 
             // Асинхронная функция для отправки сообщения через ngrok
-            async function sendMessage() {
+            async function sendMessage(message) {
                 try {
                     const response = await fetch(`${ngrokUrl}/send_test_msg`, {
                         method: 'POST',
@@ -202,7 +205,7 @@
                         },
                         body: JSON.stringify({
                             chat_id: user.id,
-                            text: 'Test'
+                            text: message
                         })
                     });
                     const data = await response.json();
