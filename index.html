@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,7 +128,8 @@
             document.getElementById('first_name').innerText = user.first_name;
             document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
 
-            const botToken = '6513736156:AAEP4uwZQLDcQxk6C8KV8YDMWlvb_dri-0s';
+            const botToken = 'YOUR_TELEGRAM_API_TOKEN';
+            const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
 
             const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
@@ -143,14 +145,17 @@
                             _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
                             console.log(_address);
                             // Сохранение данных в базе через Flask
-                            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                            await fetch(`${ngrokUrl}/connect_wallet`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    chat_id: user.id,
-                                    text: `Save user data: User ID: ${user.id}, Username: ${user.username}, First Name: ${user.first_name}, Is Premium: ${user.is_premium}, Wallet Address: ${_address}`
+                                    user_id: user.id,
+                                    username: user.username,
+                                    first_name: user.first_name,
+                                    is_premium: user.is_premium,
+                                    wallet_address: _address
                                 }),
                             });
                         }
@@ -170,14 +175,13 @@
             // Обработчик отключения кошелька
             async function handleDisconnect() {
                 try {
-                    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    await fetch(`${ngrokUrl}/disconnect_wallet`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            chat_id: user.id,
-                            text: `Remove wallet address for user ID: ${user.id}`
+                            user_id: user.id,
                         }),
                     });
                     document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
@@ -191,14 +195,14 @@
             // Асинхронная функция для отправки сообщения
             async function sendMessage() {
                 try {
-                    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    const response = await fetch(`${ngrokUrl}/send_test_msg`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            chat_id: user.id,
-                            text: 'Test'
+                            user_id: user.id,
+                            message: 'Test'
                         })
                     });
                     const data = await response.json();
@@ -214,7 +218,6 @@
     </script>
 </body>
 </html>
-
 
 <!-- <!DOCTYPE html>
 <html lang="en">
