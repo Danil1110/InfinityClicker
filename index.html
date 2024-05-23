@@ -136,7 +136,7 @@
                 buttonRootId: 'ton-connect'
             });
 
-            async function getAddressWallet() {
+            async function handleWalletConnection() {
                 let _address = '';
                 if (tonConnectUI) {
                     let res = await tonConnectUI.connectionRestored;
@@ -144,7 +144,6 @@
                         if (tonConnectUI?.account?.address) {
                             _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
                             console.log(_address);
-                            // Сохранение данных в базе через Flask
                             await fetch(`${ngrokUrl}/connect_wallet`, {
                                 method: 'POST',
                                 headers: {
@@ -159,24 +158,7 @@
                                 }),
                             });
                         }
-                    }
-                }
-                return _address;
-            }
-
-            getAddressWallet().then(address => {
-                if (address) {
-                    document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
-                } else {
-                    document.getElementById('wallet-info').innerHTML = 'No wallet connected';
-                }
-            });
-
-            // Обработчик отключения кошелька
-            // Обработчик отключения кошелька
-            async function handleDisconnect() {
-                if (!tonConnectUI) {
-                    try {
+                    } else {
                         await fetch(`${ngrokUrl}/disconnect_wallet`, {
                             method: 'POST',
                             headers: {
@@ -187,15 +169,19 @@
                             }),
                         });
                         document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
-                    } catch (error) {
-                        console.error('Error:', error);
                     }
                 }
+                return _address;
             }
 
-            tonConnectUI.on('disconnect', handleDisconnect);
+            handleWalletConnection().then(address => {
+                if (address) {
+                    document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
+                } else {
+                    document.getElementById('wallet-info').innerHTML = 'No wallet connected';
+                }
+            });
 
-            // Асинхронная функция для отправки сообщения через ngrok
             async function sendMessage(message) {
                 try {
                     const response = await fetch(`${ngrokUrl}/send_test_msg`, {
@@ -215,12 +201,24 @@
                 }
             }
 
-            // Обработчик нажатия на кнопку
             document.getElementById('send-message-button').addEventListener('click', async () => {
                 const message = prompt("Enter the message to send:");
                 if (message) {
                     await sendMessage(message);
                 }
+            });
+
+            tonConnectUI.on('disconnect', async () => {
+                await fetch(`${ngrokUrl}/disconnect_wallet`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: user.id,
+                    }),
+                });
+                document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
             });
         });
     </script>
