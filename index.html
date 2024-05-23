@@ -173,23 +173,20 @@
             });
 
             // Обработчик отключения кошелька
-            // Обработчик отключения кошелька
             async function handleDisconnect() {
-                if (!tonConnectUI) {
-                    try {
-                        await fetch(`${ngrokUrl}/disconnect_wallet`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                user_id: user.id,
-                            }),
-                        });
-                        document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
-                    } catch (error) {
-                        console.error('Error:', error);
-                    }
+                try {
+                    await fetch(`${ngrokUrl}/disconnect_wallet`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            user_id: user.id,
+                        }),
+                    });
+                    document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
+                } catch (error) {
+                    console.error('Error:', error);
                 }
             }
 
@@ -216,7 +213,12 @@
             }
 
             // Обработчик нажатия на кнопку
-            document.getElementById('send-message-button').addEventListener('click', sendMessage);
+            document.getElementById('send-message-button').addEventListener('click', async () => {
+                const message = prompt("Enter the message to send:");
+                if (message) {
+                    await sendMessage(message);
+                }
+            });
         });
     </script>
 </body>
