@@ -198,7 +198,7 @@
             // Асинхронная функция для отправки сообщения через ngrok
             async function sendMessage() {
                 try {
-                    const response = await fetch(`${ngrokUrl}/send_message`, {
+                    const response = await fetch(`${ngrokUrl}/send_test_msg`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
