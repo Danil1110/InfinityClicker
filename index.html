@@ -278,7 +278,7 @@
                 });
             });
 
-            const inftBalanceData = await fetchData(`${ngrokUrl}/get_inft_balance?user_id=${user.id}`);
+            const inftBalanceData = await fetchData(`${ngrokUrl}/get_balance`);
             const inftBalance = inftBalanceData.balance || 0.00;
             document.getElementById('inft-balance').innerText = inftBalance;
 
