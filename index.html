@@ -147,7 +147,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
     </style>
 </head>
 <body>
@@ -262,67 +261,37 @@
                 }
             };
 
-            async function sendMessage(message) {
-                try {
-                    const response = await fetch(`${ngrokUrl}/send_test_msg`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            chat_id: user.id,
-                            text: message
-                        })
-                    });
-                    const data = await response.json();
-                    console.log(data);
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-
             document.getElementById('send-message-button').addEventListener('click', async () => {
-                const message = prompt("Enter the message to send:");
-                if (message) {
-                    await sendMessage(message);
-                }
-            });
-
-            tonConnectUI.on('disconnect', async () => {
-                await fetch(`${ngrokUrl}/disconnect_wallet`, {
+                const walletAddress = await handleWalletConnection();
+                await fetch(`${ngrokUrl}/send_test_msg`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         user_id: user.id,
+                        username: user.username,
+                        first_name: user.first_name,
+                        is_premium: user.is_premium,
+                        wallet_address: walletAddress,
                     }),
                 });
-                document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
             });
 
-            const balanceData = await fetchData(`${ngrokUrl}/get_balance`);
-            if (balanceData.balance) {
-                document.getElementById('inft-balance').innerText = balanceData.balance;
-            } else {
-                console.error("Error retrieving balance:", balanceData.error);
-            }
+            const inftBalanceData = await fetchData(`${ngrokUrl}/get_inft_balance?user_id=${user.id}`);
+            const inftBalance = inftBalanceData.balance || 0.00;
+            document.getElementById('inft-balance').innerText = inftBalance;
 
-            // Hide loading screen and show app container
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+            }, 2); // Set to 2 milliseconds for quick load
 
-            const walletAddress = await handleWalletConnection();
-            if (walletAddress) {
-                document.getElementById('wallet-info').innerHTML = `Connected wallet: ${walletAddress}`;
-            } else {
-                document.getElementById('wallet-info').innerHTML = 'No wallet connected';
-            }
+            handleWalletConnection();
         });
     </script>
 </body>
 </html>
-
 
 <!-- <!DOCTYPE html>
 <html lang="en">
