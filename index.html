@@ -280,12 +280,16 @@
 
             const inftBalanceData = await fetchData(`${ngrokUrl}/get_balance`);
             const inftBalance = inftBalanceData.balance || 0.00;
-            document.getElementById('inft-balance').innerText = inftBalance;
-
-            setTimeout(() => {
+            if (inftBalance === 0 || !tonConnectUI || !walletaddress) {
+                // Скрыть меню загрузки
                 document.getElementById('loading-screen').style.display = 'none';
-                document.getElementById('app-container').style.display = 'block';
-            }, 2); // Set to 2 milliseconds for quick load
+            } else {
+                document.getElementById('inft-balance').innerText = inftBalance;
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('app-container').style.display = 'block';
+                }, 7000); // 7 секунд
+            }
 
             handleWalletConnection();
         });
