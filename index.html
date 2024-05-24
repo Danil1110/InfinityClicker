@@ -89,7 +89,7 @@
             cursor: pointer;
         }
         .rounded-inft-price, .rounded-inft-balance {
-            width: 260px;
+            width: 247px;
             height: 45px;
             background: linear-gradient(to right, pink, purple); /* Gradient background */
             border: 2px solid black;
@@ -101,7 +101,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: absolute;
             left: 50%; /* Center horizontally */
-            transform: translate(-85%, -50%); /* Center horizontally and adjust vertically */
+            transform: translate(-83%, -50%); /* Center horizontally and adjust vertically */
             color: white; /* White text color */
             font-weight: bold; /* Bold text */
         }
@@ -204,6 +204,18 @@
                 }
                 return _address;
             }
+
+            tonConnectUI.uiOptions = {
+                uiPreferences: {
+                    colorsSet: {
+                        [TON_CONNECT_UI.THEME.DARK]: {
+                            connectButton: {
+                                background: 'purple'
+                            }
+                        }
+                    }
+                }
+            };
 
             handleWalletConnection().then(address => {
                 if (address) {
