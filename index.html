@@ -145,7 +145,6 @@
                     if (res || tonConnectUI?.account?.address) {
                         if (tonConnectUI?.account?.address) {
                             _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
-                            
                             console.log(_address);
                             await fetch(`${ngrokUrl}/connect_wallet`, {
                                 method: 'POST',
