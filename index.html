@@ -246,21 +246,27 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    const balance = await response.text(); // Изменение на response.text(), чтобы получить просто строку
-                    console.log('Response from backend:', balance);
-                    const balanceValue = parseFloat(balance); // Парсинг строки в число
-                    if (!isNaN(balanceValue)) { // Проверка на NaN (не число)
-                        balanceElement.innerText = balanceValue.toFixed(2); // Отображение баланса с двумя знаками после запятой
+                    const responseData = await response.json(); // Парсим ответ как JSON
+                    console.log('Response from backend:', responseData);
+                    
+                    if (responseData.hasOwnProperty('balance')) { // Проверяем, есть ли в ответе свойство 'balance'
+                        const balanceValue = parseFloat(responseData.balance); // Пытаемся извлечь и спарсить значение баланса
+                        if (!isNaN(balanceValue)) { // Проверяем, успешно ли получено числовое значение
+                            balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
+                        } else {
+                            console.error('Invalid balance format:', responseData.balance);
+                            balanceElement.innerHTML = 'Error fetching balance: Invalid balance format';
+                        }
                     } else {
-                        console.error('Invalid balance format:', balance);
-                        balanceElement.innerHTML = 'Error fetching balance: Invalid balance format';
+                        console.error('Balance property not found in response:', responseData);
+                        balanceElement.innerHTML = 'Error fetching balance: Balance property not found in response';
                     }
                 } catch (error) {
                     console.error('Error:', error);
                     balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
                 }
             }
-                                  
+                   
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
             
