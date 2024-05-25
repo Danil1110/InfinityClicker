@@ -150,6 +150,18 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
+        async function getBalance(userId) {
+            try {
+                const response = await fetch(`${ngrokUrl}/get_balance?user_id=${userId}`);
+                const data = await response.json();
+                if (data.balance) {
+                    document.getElementById('inft-balance').innerText = data.balance;
+                }
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
             tg.ready();
@@ -274,29 +286,7 @@
                 document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
             });
         });
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('${ngrokUrl}/get_balance') // Используем ngrokUrl в шаблонной строке
-            .then(response => response.json())
-            .then(data => {
-                if (data.balance) {
-                    // Обновляем баланс
-                    document.getElementById('inft-balance').innerText = data.balance;
-                    // Добавляем обновление URL для отправки запросов обратно на сервер
-                    const ngrokUrl = '${ngrokUrl}'; // Обновляем ngrokUrl
-                    document.getElementById('send-message-button').addEventListener('click', async () => {
-                        const message = prompt("Enter the message to send:");
-                        if (message) {
-                            await sendMessage(message, ngrokUrl); // Функция отправки сообщения теперь принимает URL
-                        }
-                    });
-                } else {
-                    console.error("Error retrieving balance:", data.error);
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching balance:", error);
-            });
-        });
+        
                 
     </script>
 </body>
