@@ -237,6 +237,7 @@
                 }
             });
 
+            
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
                 try {
@@ -246,25 +247,16 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    const responseData = await response.text(); // Получаем ответ как текст
+                    const responseData = await response.json(); // Получаем ответ как JSON
                     console.log('Response from backend:', responseData);
                     
-                    // Ищем числовую часть в тексте ответа
-                    const balanceMatch = responseData.match(/\d+(\.\d+)?/);
-                    
-                    if (balanceMatch) { // Проверяем, найдено ли совпадение
-                        const balanceValue = parseFloat(balanceMatch[0]); // Преобразуем найденное значение в число
-                        balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
-                    } else {
-                        console.error('Invalid balance format:', responseData);
-                        balanceElement.innerHTML = 'Error fetching balance: Invalid balance format';
-                    }
+                    const balanceValue = parseFloat(responseData.balance); // Извлекаем значение баланса из JSON-ответа
+                    balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
                 } catch (error) {
                     console.error('Error:', error);
                     balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
                 }
             }
-
                    
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
