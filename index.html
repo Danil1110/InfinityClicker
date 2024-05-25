@@ -247,12 +247,13 @@
                     });
                     const data = await response.json();
                     const balance = data.balance; // Получаем значение баланса из JSON
-                    document.getElementById('inft-balance').innerText = String(balance);
+                    document.getElementById('inft-balance').innerText = String(balance); // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
                     console.error('Error:', error);
-                    document.getElementById('inft-balance').innerText = error.message || 'Error loading balance'; // В случае ошибки отображаем текст ошибки
+                    document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error}`;
                 }
             }
+
 
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
