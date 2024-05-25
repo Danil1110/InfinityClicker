@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +26,6 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: none; /* Hide container initially */
         }
         h1 {
             margin-bottom: 20px;
@@ -121,6 +121,7 @@
             text-fill-color: transparent;
             font-weight: bold;
         }
+
     </style>
 </head>
 <body>
@@ -149,15 +150,7 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        async function fetchData(url) {
-            const response = await fetch(url);
-            const data = await response.json();
-            return data;
-        }
-
-        document.addEventListener('DOMContentLoaded', async function () {
-            const test = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
-
+        document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
             tg.ready();
 
@@ -176,6 +169,7 @@
             document.getElementById('first_name').innerText = user.first_name;
             document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
 
+            const botToken = 'YOUR_TELEGRAM_API_TOKEN';
             const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
 
             const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
@@ -233,36 +227,80 @@
                 }
             };
 
+            handleWalletConnection().then(address => {
+                if (address) {
+                    document.getElementById('wallet-info').innerHTML = `Connected wallet: ${address}`;
+                } else {
+                    document.getElementById('wallet-info').innerHTML = 'No wallet connected';
+                }
+            });
+
+            async function sendMessage(message) {
+                try {
+                    const response = await fetch(`${ngrokUrl}/send_test_msg`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            chat_id: user.id,
+                            text: message
+                        })
+                    });
+                    const data = await response.json();
+                    console.log(data);
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+
             document.getElementById('send-message-button').addEventListener('click', async () => {
-                const walletAddress = await handleWalletConnection();
-                await fetch(`${ngrokUrl}/send_test_msg`, {
+                const message = prompt("Enter the message to send:");
+                if (message) {
+                    await sendMessage(message);
+                }
+            });
+
+            tonConnectUI.on('disconnect', async () => {
+                await fetch(`${ngrokUrl}/disconnect_wallet`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         user_id: user.id,
-                        username: user.username,
-                        first_name: user.first_name,
-                        is_premium: user.is_premium,
-                        wallet_address: walletAddress,
                     }),
                 });
+                document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
             });
-
-            const inftBalanceData = await fetchData(`${ngrokUrl}/get_balance`);
-            const inftBalance = inftBalanceData.balance || 0.00;
-            if (inftBalance !== 0 && tonConnectUI && inftBalanceData) {
-                document.getElementById('inft-balance').innerText = inftBalance;
-                document.getElementById('app-container').style.display = 'block'; // Показать контейнер приложения
-            }
-
-            handleWalletConnection();
         });
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('${ngrokUrl}/get_balance') // Используем ngrokUrl в шаблонной строке
+            .then(response => response.json())
+            .then(data => {
+                if (data.balance) {
+                    // Обновляем баланс
+                    document.getElementById('inft-balance').innerText = data.balance;
+                    // Добавляем обновление URL для отправки запросов обратно на сервер
+                    const ngrokUrl = '${ngrokUrl}'; // Обновляем ngrokUrl
+                    document.getElementById('send-message-button').addEventListener('click', async () => {
+                        const message = prompt("Enter the message to send:");
+                        if (message) {
+                            await sendMessage(message, ngrokUrl); // Функция отправки сообщения теперь принимает URL
+                        }
+                    });
+                } else {
+                    console.error("Error retrieving balance:", data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching balance:", error);
+            });
+        });
+                
     </script>
 </body>
 </html>
-
 
 <!-- <!DOCTYPE html>
 <html lang="en">
