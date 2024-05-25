@@ -248,14 +248,10 @@
                     const responseData = await response.text(); // Получаем текст ответа
                     alert(`Response data: ${responseData}`);
                     
-                    const balanceMatch = responseData.match(/"balance":\s*"([^"]+)"/); // Извлекаем значение balance из строки
-                    if (balanceMatch) {
-                        const balance = balanceMatch[1];
-                        alert(`Balance: ${balance}`);
-                        document.getElementById('inft-balance').innerText = String(balance); // Вставляем значение баланса в элемент с id "inft-balance"
-                    } else {
-                        throw new Error('Could not extract balance value');
-                    }
+                    const data = JSON.parse(responseData); // Пытаемся разобрать текст ответа как JSON
+                    const balance = data.balance; // Получаем значение баланса из JSON
+                    alert(`Balance: ${balance}`); // Выводим значение баланса
+                    document.getElementById('inft-balance').innerText = String(balance); // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
                     console.error('Error:', error);
                     alert(`Error loading balance: ${error.message || error}`);
