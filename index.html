@@ -150,9 +150,9 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        async function getBalance(userId) {
+        async function getBalance() {
             try {
-                const response = await fetch(`${ngrokUrl}/get_balance?user_id=${userId}`);
+                const response = await fetch(`${ngrokUrl}/get_balance`);
                 const data = await response.json();
                 if (data.balance) {
                     document.getElementById('inft-balance').innerText = data.balance;
