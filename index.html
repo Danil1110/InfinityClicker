@@ -248,7 +248,7 @@
                         }
                     });
                     const data = await response.json();
-                    console.log('Response from backend:', data); // Log the response to see its structure
+                    console.log('Response from backend:', data); // Проверьте, что данные выводятся в консоль
                     if (data && data.balance !== undefined) {
                         balanceElement.innerText = data.balance;
                     } else {
@@ -257,14 +257,8 @@
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    // Проверка, является ли ошибка ошибкой парсинга или из-за нехватки времени для обработки
-                    if (error instanceof SyntaxError) {
-                        balanceElement.innerHTML = 'Error parsing balance data';
-                    } else if (error instanceof TypeError) {
-                        balanceElement.innerHTML = 'Timeout: Server could not process the request';
-                    } else {
-                        balanceElement.innerHTML = 'None';
-                    }
+                    // Обработка ошибок
+                    balanceElement.innerHTML = 'Error fetching balance: ' + error.message; // Вывод сообщения об ошибке на сайт
                 }
             }
             
