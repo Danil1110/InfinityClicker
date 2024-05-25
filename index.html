@@ -249,17 +249,19 @@
                     });
                     const data = await response.json();
                     console.log('Response from backend:', data);
-                    if (data && typeof data.balance === 'string') {
-                        balanceElement.innerText = data.balance;
+                    const balance = parseFloat(data.balance); // Парсинг баланса в число
+                    if (!isNaN(balance)) { // Проверка на NaN (не число)
+                        balanceElement.innerText = balance.toFixed(2); // Отображение баланса с двумя знаками после запятой
                     } else {
-                        console.error('Invalid data format or missing balance field:', data);
-                        balanceElement.innerHTML = 'Error fetching balance: Unexpected data format';
+                        console.error('Invalid balance format:', data.balance);
+                        balanceElement.innerHTML = 'Error fetching balance: Invalid balance format';
                     }
                 } catch (error) {
                     console.error('Error:', error);
                     balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
                 }
             }
+
                         
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
