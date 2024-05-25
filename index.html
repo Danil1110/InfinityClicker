@@ -252,18 +252,16 @@
 
             const inftBalanceData = await fetchData(`${ngrokUrl}/get_balance`);
             const inftBalance = inftBalanceData.balance || 0.00;
-
-            document.getElementById('inft-balance').innerText = inftBalance;
-
-            // Ensure container is displayed after balance is fetched and displayed
-            document.getElementById('app-container').style.display = 'block';
+            if (inftBalance !== 0 && tonConnectUI && inftBalanceData) {
+                document.getElementById('inft-balance').innerText = inftBalance;
+                document.getElementById('app-container').style.display = 'block'; // Показать контейнер приложения
+            }
 
             handleWalletConnection();
         });
     </script>
 </body>
 </html>
-
 
 
 <!-- <!DOCTYPE html>
