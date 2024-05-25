@@ -246,15 +246,12 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    const responseData = await response.json(); // Преобразуем ответ в объект JSON
+                    
+                    // Получаем текст ответа, не преобразуя его в JSON
+                    const responseData = await response.text();
             
-                    // Проверяем, что баланс присутствует в ответе и является строкой
-                    if (typeof responseData.balance === 'string') {
-                        const balance = responseData.balance; // Извлекаем баланс
-                        balanceElement.innerText = balance; // Устанавливаем баланс в элемент
-                    } else {
-                        throw new Error('Invalid balance data'); // Возбуждаем ошибку, если баланс отсутствует или имеет неверный формат
-                    }
+                    // Просто устанавливаем полученную строку в элемент баланса
+                    balanceElement.innerText = responseData;
                 } catch (error) {
                     console.error('Error:', error);
                     balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
