@@ -240,31 +240,22 @@
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
                 try {
-                    const response = await fetch(${ngrokUrl}/get_balance, {
+                    const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     });
-                    const responseData = await response.text(); // Получаем ответ как текст
+                    const responseData = await response.json(); // Получаем ответ как JSON
                     console.log('Response from backend:', responseData);
                     
-                    // Ищем числовую часть в тексте ответа
-                    const balanceMatch = responseData.match(/\d+(\.\d+)?/);
-                    
-                    if (balanceMatch) { // Проверяем, найдено ли совпадение
-                        const balanceValue = parseFloat(balanceMatch[0]); // Преобразуем найденное значение в число
-                        balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
-                    } else {
-                        console.error('Invalid balance format:', responseData);
-                        balanceElement.innerHTML = 'Error fetching balance: Invalid balance format';
-                    }
+                    const balance = responseData.balance; // Извлекаем баланс как строку
+                    balanceElement.innerText = balance; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
                     balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
                 }
             }
-
                    
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
