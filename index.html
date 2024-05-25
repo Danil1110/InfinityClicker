@@ -150,17 +150,7 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        async function getBalance() {
-            try {
-                const response = await fetch(`${ngrokUrl}/get_balance`);
-                const data = await response.json();
-                if (data.balance) {
-                    document.getElementById('inft-balance').innerText = data.balance;
-                }
-            } catch (error) {
-                console.error('Error fetching balance:', error);
-            }
-        }
+        
 
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
@@ -188,6 +178,18 @@
                 manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
                 buttonRootId: 'ton-connect'
             });
+
+            async function getBalance() {
+            try {
+                const response = await fetch(`${ngrokUrl}/get_balance`);
+                const data = await response.json();
+                if (data.balance) {
+                    document.getElementById('inft-balance').innerText = data.balance;
+                }
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+                }
+            }
 
             async function handleWalletConnection() {
                 let _address = '';
