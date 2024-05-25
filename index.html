@@ -237,7 +237,7 @@
                 }
             });
 
-            aasync function updateBalance() {
+            async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
