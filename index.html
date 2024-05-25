@@ -121,38 +121,9 @@
             text-fill-color: transparent;
             font-weight: bold;
         }
-
-        /* Loading screen styles */
-        #loading-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        .loader {
-            border: 16px solid #f3f3f3;
-            border-top: 16px solid #4CAF50;
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <div class="loader"></div>
-    </div>
     <div id="ton-connect"></div>
     <div class="container" id="app-container">
         <h1>Welcome to Telegram WebApp</h1>
@@ -175,126 +146,121 @@
     </div>
     <script>
         function isMobileDevice() {
-        return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    }
-
-    async function fetchData(url) {
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-    }
-
-    document.addEventListener('DOMContentLoaded', async function () {
-        const test = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
-
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-
-        if (!tg.initDataUnsafe || !isMobileDevice()) {
-            document.body.style.backgroundColor = 'black';
-            document.body.style.color = 'white';
-            document.getElementById('app-container').style.display = 'none';
-            document.getElementById('not-supported').style.display = 'block';
-            return;
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        const user = tg.initDataUnsafe.user;
+        async function fetchData(url) {
+            const response = await fetch(url);
+            const data = await response.json();
+            return data;
+        }
 
-        document.getElementById('user_id').innerText = user.id;
-        document.getElementById('username').innerText = user.username || 'N/A';
-        document.getElementById('first_name').innerText = user.first_name;
-        document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
+        document.addEventListener('DOMContentLoaded', async function () {
+            const test = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
 
-        const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
+            const tg = window.Telegram.WebApp;
+            tg.ready();
 
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect'
-        });
+            if (!tg.initDataUnsafe || !isMobileDevice()) {
+                document.body.style.backgroundColor = 'black';
+                document.body.style.color = 'white';
+                document.getElementById('app-container').style.display = 'none';
+                document.getElementById('not-supported').style.display = 'block';
+                return;
+            }
 
-        async function handleWalletConnection() {
-            let _address = '';
-            if (tonConnectUI) {
-                let res = await tonConnectUI.connectionRestored;
-                if (res || tonConnectUI?.account?.address) {
-                    if (tonConnectUI?.account?.address) {
-                        _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
-                        console.log(_address);
-                        await fetch(`${ngrokUrl}/connect_wallet`, {
+            const user = tg.initDataUnsafe.user;
+
+            document.getElementById('user_id').innerText = user.id;
+            document.getElementById('username').innerText = user.username || 'N/A';
+            document.getElementById('first_name').innerText = user.first_name;
+            document.getElementById('is_premium').innerText = user.is_premium ? 'Yes' : 'No';
+
+            const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
+
+            const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
+                buttonRootId: 'ton-connect'
+            });
+
+            async function handleWalletConnection() {
+                let _address = '';
+                if (tonConnectUI) {
+                    let res = await tonConnectUI.connectionRestored;
+                    if (res || tonConnectUI?.account?.address) {
+                        if (tonConnectUI?.account?.address) {
+                            _address = TON_CONNECT_UI.toUserFriendlyAddress(tonConnectUI.account.address);
+                            console.log(_address);
+                            await fetch(`${ngrokUrl}/connect_wallet`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    user_id: user.id,
+                                    username: user.username,
+                                    first_name: user.first_name,
+                                    is_premium: user.is_premium,
+                                    wallet_address: _address
+                                }),
+                            });
+                        }
+                    } else {
+                        await fetch(`${ngrokUrl}/disconnect_wallet`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
                                 user_id: user.id,
-                                username: user.username,
-                                first_name: user.first_name,
-                                is_premium: user.is_premium,
-                                wallet_address: _address
                             }),
                         });
+                        document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
                     }
-                } else {
-                    await fetch(`${ngrokUrl}/disconnect_wallet`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            user_id: user.id,
-                        }),
-                    });
-                    document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
                 }
+                return _address;
             }
-            return _address;
-        }
 
-        tonConnectUI.uiOptions = {
-            uiPreferences: {
-                colorsSet: {
-                    [TON_CONNECT_UI.THEME.DARK]: {
-                        connectButton: {
-                            background: 'purple'
+            tonConnectUI.uiOptions = {
+                uiPreferences: {
+                    colorsSet: {
+                        [TON_CONNECT_UI.THEME.DARK]: {
+                            connectButton: {
+                                background: 'purple'
+                            }
                         }
                     }
                 }
-            }
-        };
+            };
 
-        document.getElementById('send-message-button').addEventListener('click', async () => {
-            const walletAddress = await handleWalletConnection();
-            await fetch(`${ngrokUrl}/send_test_msg`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: user.id,
-                    username: user.username,
-                    first_name: user.first_name,
-                    is_premium: user.is_premium,
-                    wallet_address: walletAddress,
-                }),
+            document.getElementById('send-message-button').addEventListener('click', async () => {
+                const walletAddress = await handleWalletConnection();
+                await fetch(`${ngrokUrl}/send_test_msg`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: user.id,
+                        username: user.username,
+                        first_name: user.first_name,
+                        is_premium: user.is_premium,
+                        wallet_address: walletAddress,
+                    }),
+                });
             });
-        });
 
-        const inftBalanceData = await fetchData(`${ngrokUrl}/get_balance`);
-        const inftBalance = inftBalanceData.balance || 0.00;
-        if (inftBalance === 0 || !tonConnectUI || !inftBalanceData) {
-            // Скрыть меню загрузки
-            document.getElementById('loading-screen').style.display = 'none';
-        } else {
+            const inftBalanceData = await fetchData(`${ngrokUrl}/get_balance`);
+            const inftBalance = inftBalanceData.balance || 0.00;
             document.getElementById('inft-balance').innerText = inftBalance;
-            document.getElementById('loading-screen').style.display = 'none'; // Скрыть меню загрузки
             document.getElementById('app-container').style.display = 'block'; // Показать контейнер приложения
-        }
 
-        handleWalletConnection();
-    });
+            handleWalletConnection();
+        });
     </script>
 </body>
 </html>
+
 
 <!-- <!DOCTYPE html>
 <html lang="en">
