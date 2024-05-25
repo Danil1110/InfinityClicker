@@ -240,30 +240,27 @@
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
                 try {
-                    const response = await fetch(${ngrokUrl}/get_balance, {
+                    const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     });
-                    const responseData = await response.text(); // Получаем ответ как текст
-                    console.log('Response from backend:', responseData);
-                    
-                    // Ищем числовую часть в тексте ответа
-                    const balanceMatch = responseData.match(/\d+(\.\d+)?/);
-                    
-                    if (balanceMatch) { // Проверяем, найдено ли совпадение
-                        const balanceValue = parseFloat(balanceMatch[0]); // Преобразуем найденное значение в число
-                        balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
+                    const responseData = await response.json(); // Преобразуем ответ в объект JSON
+            
+                    // Проверяем, что баланс присутствует в ответе и является строкой
+                    if (responseData.hasOwnProperty('balance') && typeof responseData.balance === 'string') {
+                        const balance = responseData.balance; // Извлекаем баланс
+                        balanceElement.innerText = balance; // Устанавливаем баланс в элемент
                     } else {
-                        console.error('Invalid balance format:', responseData);
-                        balanceElement.innerHTML = 'Error fetching balance: Invalid balance format';
+                        throw new Error('Invalid balance data'); // Возбуждаем ошибку, если баланс отсутствует или имеет неверный формат
                     }
                 } catch (error) {
                     console.error('Error:', error);
                     balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
                 }
-            }  
+            }
+
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
             
