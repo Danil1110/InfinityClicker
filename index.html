@@ -245,12 +245,12 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    const responseData = await response.text(); // Получаем текст ответа
-                    alert(`Response data: ${responseData}`);
                     
-                    const data = JSON.parse(responseData); // Пытаемся разобрать текст ответа как JSON
+                    const data = await response.json(); // Получаем JSON данные из ответа
+                    alert(`Data: ${data}`); // Выводим значение баланса
                     const balance = data.balance; // Получаем значение баланса из JSON
                     alert(`Balance: ${balance}`); // Выводим значение баланса
+                    
                     document.getElementById('inft-balance').innerText = String(balance); // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
                     console.error('Error:', error);
