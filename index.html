@@ -150,6 +150,8 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
+        
+
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
             tg.ready();
@@ -179,7 +181,7 @@
 
             async function getBalanceFromBackend() {
                 try {
-                    const response = await fetch('/get_balance', {
+                    const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
@@ -202,6 +204,9 @@
                     balanceElement.innerText = 'Error fetching balance';
                 }
             }
+            
+            // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
+            updateBalance();
             
             async function handleWalletConnection() {
                 let _address = '';
@@ -300,14 +305,135 @@
                 document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
             });
         
-            // Вызываем обновление баланса после загрузки страницы
-            updateBalance();
+        
         });
+        
                 
     </script>
 </body>
 </html>
 
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Telegram Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="sendDataToBot()">Send Data to Bot</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        function sendDataToBot() {
+            const botToken = '6513736156:AAEP4uwZQLDcQxk6C8KV8YDMWlvb_dri-0s';
+            const chatId = tg.initDataUnsafe.user.id;  // Получение user id из инициализационных данных
+            const message = 'test';
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                }),
+            }).then(response => response.json())
+              .then(data => {
+                  console.log('Success:', data);
+              })
+              .catch((error) => {
+                  console.error('Error:', error);
+              });
+        }
+    </script>
+</body>
+</html>
+ -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Infinity Clicker</title>
+    <link rel="stylesheet" href="static/styles/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body class="background-gradient">
+    <div id="clicker-container">
+        <div id="score">0</div>
+        <div class="coin-wrapper" id="coin"><img src="static/images/InfinityCoin.png" alt="Coin"></div>
+        <div id="progress-container">
+            <div id="charge-label">⚡️ 1000/1000</div>
+            <div id="progress-value" style="width: 100%;"></div>
+        </div>
+        <div id="reset-button" onclick="resetGame()">Reset</div>
+        <button id="shop-button" onclick="openShop()">Shop</button>
+        <div id="shop-modal" class="hidden">
+            <div id="close-button" onclick="closeShop()">⤫</div>
+            <div class="shop-item">
+                <div>Click Upgrade (+1 per click)</div>
+                <div>Cost: ~<span id="clickUpgradeCost">100</span></div>
+                <div>Level: <span id="clickUpgradeLevel">1</span></div>
+                <button class="buy-button" id="buyClickUpgrade" onclick="buyClickUpgrade()">Buy</button>
+            </div>
+            <div class="shop-item">
+                <div>Charge Speed Upgrade (+5 faster recharge)</div>
+                <div>Cost: ~<span id="chargeSpeedCost">750</span></div>
+                <div>Level: <span id="chargeSpeedLevel">1</span></div>
+                <button class="buy-button" id="buyChargeSpeedUpgrade" onclick="buyChargeSpeedUpgrade()">Buy</button>
+            </div>
+            <div class="shop-item">
+                <div>Charge Capacity Upgrade (+250 max charge)</div>
+                <div>Cost: ~<span id="chargeCapacityCost">500</span></div>
+                <div>Level: <span id="chargeCapacityLevel">1</span></div>
+                <button class="buy-button" id="buyChargeCapacityUpgrade" onclick="buyChargeCapacityUpgrade()">Buy</button>
+            </div>
+        </div>
+        <div id="connect-button-root"></div>
+        <div id="wallet-info"></div>
+        <div id="wallet-modal" class="hidden">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeWalletModal()">&times;</span>
+                <p>Please connect your wallet to play.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+ -->
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
