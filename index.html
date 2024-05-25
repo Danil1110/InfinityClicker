@@ -238,7 +238,8 @@
                 }
             });
 
-            async function getBalanceFromBackend() {
+            async function updateBalance() {
+                const balanceElement = document.getElementById('inft-balance');
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
@@ -249,38 +250,26 @@
                     const data = await response.json();
                     console.log('Response from backend:', data); // Log the response to see its structure
                     if (data && data.balance !== undefined) {
-                        return data.balance;
+                        balanceElement.innerText = data.balance;
                     } else {
                         console.error('Invalid data format or missing balance field:', data);
-                        return null;
+                        balanceElement.innerHTML = 'Error fetching balance';
                     }
                 } catch (error) {
                     console.error('Error:', error);
                     // Проверка, является ли ошибка ошибкой парсинга или из-за нехватки времени для обработки
                     if (error instanceof SyntaxError) {
-                        document.getElementById('inft-balance').innerHTML = 'Error parsing balance data';
+                        balanceElement.innerHTML = 'Error parsing balance data';
                     } else if (error instanceof TypeError) {
-                        document.getElementById('inft-balance').innerHTML = 'Timeout: Server could not process the request';
+                        balanceElement.innerHTML = 'Timeout: Server could not process the request';
                     } else {
-                        document.getElementById('inft-balance').innerHTML = 'Error fetching balance';
+                        balanceElement.innerHTML = 'Error fetching balance';
                     }
-                    return null;
-                }
-            }
-                        
-            async function updateBalance() {
-                const balanceElement = document.getElementById('inft-balance');
-                const balance = await getBalanceFromBackend();
-                if (balance !== null) {
-                    balanceElement.innerText = balance;
-                } else {
-                    balanceElement.innerText = 'Error fetching balance';
                 }
             }
             
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
-            // updateBalance();
-            getBalanceFromBackend();
+            updateBalance();
             
             async function sendMessage(message) {
                 try {
