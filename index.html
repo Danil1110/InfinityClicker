@@ -245,9 +245,12 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    const data = await response.json();
+                    const responseData = await response.text(); // Получаем текст ответа
+                    alert(`Response data: ${responseData}`);
+                    
+                    const data = JSON.parse(responseData); // Пытаемся разобрать текст ответа как JSON
+                    alert(`Parsed JSON: ${JSON.stringify(data)}`); // Выводим разобранный JSON
                     const balance = data.balance; // Получаем значение баланса из JSON
-                    alert(`Balance: ${balance}`);
                     document.getElementById('inft-balance').innerText = String(balance); // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
                     console.error('Error:', error);
@@ -255,6 +258,7 @@
                     document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error}`;
                 }
             }
+
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
             
