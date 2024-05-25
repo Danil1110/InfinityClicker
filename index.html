@@ -150,34 +150,7 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        async function getBalanceFromBackend() {
-            try {
-                const response = await fetch('/get_balance', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await response.json();
-                return data.balance;
-            } catch (error) {
-                console.error('Error:', error);
-                return null;
-            }
-        }
         
-        async function updateBalance() {
-            const balanceElement = document.getElementById('inft-balance');
-            const balance = await getBalanceFromBackend();
-            if (balance !== null) {
-                balanceElement.innerText = balance;
-            } else {
-                balanceElement.innerText = 'Error fetching balance';
-            }
-        }
-        
-        // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
-        updateBalance();
 
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
@@ -206,7 +179,34 @@
                 buttonRootId: 'ton-connect'
             });
 
+            async function getBalanceFromBackend() {
+                try {
+                    const response = await fetch('/get_balance', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const data = await response.json();
+                    return data.balance;
+                } catch (error) {
+                    console.error('Error:', error);
+                    return null;
+                }
+            }
             
+            async function updateBalance() {
+                const balanceElement = document.getElementById('inft-balance');
+                const balance = await getBalanceFromBackend();
+                if (balance !== null) {
+                    balanceElement.innerText = balance;
+                } else {
+                    balanceElement.innerText = 'Error fetching balance';
+                }
+            }
+            
+            // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
+            updateBalance();
             
             async function handleWalletConnection() {
                 let _address = '';
@@ -304,6 +304,8 @@
                 });
                 document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
             });
+        
+        
         });
         
                 
