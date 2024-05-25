@@ -248,20 +248,19 @@
                         }
                     });
                     const data = await response.json();
-                    console.log('Response from backend:', data); // Проверьте, что данные выводятся в консоль
-                    if (data && data.balance !== undefined) {
+                    console.log('Response from backend:', data);
+                    if (data && typeof data.balance === 'string') {
                         balanceElement.innerText = data.balance;
                     } else {
                         console.error('Invalid data format or missing balance field:', data);
-                        balanceElement.innerHTML = 'Error fetching balance';
+                        balanceElement.innerHTML = 'Error fetching balance: Unexpected data format';
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    // Обработка ошибок
-                    balanceElement.innerHTML = 'Error fetching balance: ' + error.message; // Вывод сообщения об ошибке на сайт
+                    balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
                 }
             }
-            
+                        
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
             
