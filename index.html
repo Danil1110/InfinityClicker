@@ -238,7 +238,6 @@
             });
 
             async function updateBalance() {
-                const balanceElement = document.getElementById('inft-balance');
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
@@ -246,15 +245,11 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    
-                    // Получаем текст ответа, не преобразуя его в JSON
-                    const responseData = await response.text();
-            
-                    // Просто устанавливаем полученную строку в элемент баланса
-                    balanceElement.innerText = responseData;
+                    const data = await response.json();
+                    const balance = data.balance; // Получаем значение баланса из JSON
+                    document.getElementById('inft-balance').innerText = balance; // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
                     console.error('Error:', error);
-                    balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
                 }
             }
 
