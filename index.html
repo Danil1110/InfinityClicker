@@ -150,8 +150,6 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        
-
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
             tg.ready();
@@ -204,9 +202,6 @@
                     balanceElement.innerText = 'Error fetching balance';
                 }
             }
-            
-            // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
-            updateBalance();
             
             async function handleWalletConnection() {
                 let _address = '';
@@ -305,9 +300,9 @@
                 document.getElementById('wallet-info').innerHTML = 'Wallet disconnected';
             });
         
-        
+            // Вызываем обновление баланса после загрузки страницы
+            updateBalance();
         });
-        
                 
     </script>
 </body>
