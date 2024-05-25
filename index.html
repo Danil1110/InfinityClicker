@@ -251,9 +251,9 @@
                 } catch (error) {
                     console.error('Error:', error);
                     document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error}`;
+                    alert(`Error loading balance: ${error.message || error}`);
                 }
             }
-
 
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
