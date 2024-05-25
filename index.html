@@ -179,35 +179,7 @@
                 buttonRootId: 'ton-connect'
             });
 
-            async function getBalanceFromBackend() {
-                try {
-                    const response = await fetch(`${ngrokUrl}/get_balance`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    const data = await response.json();
-                    return data.balance;
-                } catch (error) {
-                    console.error('Error:', error);
-                    return null;
-                }
-            }
-            
-            async function updateBalance() {
-                const balanceElement = document.getElementById('inft-balance');
-                const balance = await getBalanceFromBackend();
-                if (balance !== null) {
-                    balanceElement.innerText = balance;
-                } else {
-                    balanceElement.innerText = 'Error fetching balance';
-                }
-            }
-            
-            // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
-            updateBalance();
-            
+                        
             async function handleWalletConnection() {
                 let _address = '';
                 if (tonConnectUI) {
@@ -266,6 +238,35 @@
                 }
             });
 
+            async function getBalanceFromBackend() {
+                try {
+                    const response = await fetch(`${ngrokUrl}/get_balance`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const data = await response.json();
+                    return data.balance;
+                } catch (error) {
+                    console.error('Error:', error);
+                    return null;
+                }
+            }
+            
+            async function updateBalance() {
+                const balanceElement = document.getElementById('inft-balance');
+                const balance = await getBalanceFromBackend();
+                if (balance !== null) {
+                    balanceElement.innerText = balance;
+                } else {
+                    balanceElement.innerText = 'Error fetching balance';
+                }
+            }
+            
+            // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
+            updateBalance();
+            
             async function sendMessage(message) {
                 try {
                     const response = await fetch(`${ngrokUrl}/send_test_msg`, {
