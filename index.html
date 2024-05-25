@@ -237,7 +237,7 @@
                 }
             });
 
-           async function updateBalance() {
+            async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
@@ -249,18 +249,14 @@
                     const responseData = await response.json(); // Получаем ответ как JSON
                     console.log('Response from backend:', responseData);
                     
-                    const balance = parseFloat(responseData.balance); // Пытаемся извлечь и преобразовать значение баланса в число
-                    if (!isNaN(balance)) { // Проверяем, удалось ли получить числовое значение
-                        balanceElement.innerText = balance.toFixed(2); // Отображаем баланс с двумя знаками после запятой
-                    } else {
-                        console.error('Invalid balance format:', responseData.balance);
-                        balanceElement.innerHTML = 'Error fetching balance: Invalid balance format';
-                    }
+                    const balance = responseData.balance; // Извлекаем баланс как строку
+                    balanceElement.innerText = balance; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
                     balanceElement.innerHTML = 'Error fetching balance: ' + error.message;
                 }
             }
+
                    
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
