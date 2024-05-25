@@ -247,7 +247,12 @@
                         }
                     });
                     const data = await response.json();
-                    return data.balance;
+                    if (data && data.balance !== undefined) {
+                        return data.balance;
+                    } else {
+                        console.error('Invalid data format or missing balance field:', data);
+                        return null;
+                    }
                 } catch (error) {
                     console.error('Error:', error);
                     return null;
