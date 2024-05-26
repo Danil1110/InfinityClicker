@@ -261,11 +261,11 @@
                     balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
-                    alert(`Error loading balance: ${error.message}. Response data: ${error.responseData}`);
+                    alert(`Error loading balance: ${error.message}. Response data: ${JSON.stringify(jsonResponse)}`);
                     balanceElement.innerHTML = `Error loading balance: ${error.message}`;
                 }
             }
-            
+
             updateBalance();
             
             async function sendMessage(message) {
