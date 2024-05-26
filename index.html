@@ -322,13 +322,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask JSON Fetch</title>
     <script>
-        const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
+        const ngrokUrl = 'https://<your-ngrok-url>';  // Используйте правильный ngrok URL
 
         async function fetchData() {
             try {
-                const response = await fetch(`${ngrokUrl}/get_balance.json`, {
+                const response = await fetch(`${ngrokUrl}/get_balance`, {
                     method: 'GET',
                     headers: {
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     }
                 });
