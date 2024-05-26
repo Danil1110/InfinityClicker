@@ -241,7 +241,9 @@
                 const balanceElement = document.getElementById('inft-balance');
                 let responseData; // Объявляем переменную responseData перед try-catch блоком
                 try {
-                    const response = await fetch(`${ngrokUrl}/get_balance`);
+                    const response = await fetch(`${ngrokUrl}/get_balance`, {
+                        method: 'GET' // Указываем метод GET
+                    });
                     responseData = await response.json(); // Получаем ответ как JSON объект
                     const balanceValue = responseData.balance; // Извлекаем баланс из JSON объекта
                     balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
