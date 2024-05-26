@@ -6,19 +6,35 @@
 <body>
     <div id="text"></div>
     <script>
-        // Здесь мы используем переменную text, переданную из Python
-        var text = "{{ text }}";
-        // Вставляем текст на страницу
-        document.getElementById("text").innerHTML = text;
+        // Функция для получения текста с ngrok URL
+        async function getText() {
+            try {
+                // Ссылка на ngrok
+                var ngrokUrl = "https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/";
 
-        // Ссылка на ngrok
-        var ngrokUrl = "https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/";
+                // Добавляем путь к странице text.html
+                var textUrl = ngrokUrl + "text.html";
 
-        // Добавляем путь к странице text.html
-        var textUrl = ngrokUrl + "text.html";
+                // Получаем данные с ngrok URL
+                const response = await fetch(textUrl);
 
-        // Выводим ссылку на страницу text.html
-        document.write("<a href='" + textUrl + "'>Ссылка на страницу с текстом</a>");
+                // Проверяем, успешен ли запрос
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                // Получаем текст ответа
+                const text = await response.text();
+
+                // Вставляем текст на страницу
+                document.getElementById("text").innerHTML = text;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Вызываем функцию для получения текста
+        getText();
     </script>
 </body>
 </html>
