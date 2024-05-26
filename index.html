@@ -13,7 +13,7 @@
             const balanceElement = document.getElementById('inft-balance');
             const errorMessageElement = document.getElementById('error-message');
             try {
-                const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
+                const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';  // Замените на ваш ngrok URL
                 const response = await fetch(`${ngrokUrl}/get_balance`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
