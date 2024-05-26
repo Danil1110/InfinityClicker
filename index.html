@@ -239,26 +239,17 @@
     
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
+                let responseData; // Объявляем переменную responseData перед try-catch блоком
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`);
-                    const responseData = await response.text(); // Получаем ответ как текст
-            
-                    // Ищем числовую часть в тексте ответа
-                    const balanceMatch = responseData.match(/\d+(\.\d+)?/);
-            
-                    if (balanceMatch) { // Проверяем, найдено ли совпадение
-                        const balanceValue = parseFloat(balanceMatch[0]); // Преобразуем найденное значение в число
-                        balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
-                    } else {
-                        console.error('Invalid balance format:', responseData);
-                        balanceElement.innerHTML = `Error fetching balance: Invalid balance format. Received: ${responseData}`;
-                    }
+                    responseData = await response.json(); // Получаем ответ как JSON объект
+                    const balanceValue = responseData.balance; // Извлекаем баланс из JSON объекта
+                    balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
                 } catch (error) {
                     console.error('Error:', error);
-                    balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseData}`;
+                    balanceElement.innerHTML = `Error fetching balance: ${error.message}.`;
                 }
             }
-
             updateBalance();
             
             async function sendMessage(message) {
