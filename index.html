@@ -236,15 +236,12 @@
                     document.getElementById('wallet-info').innerHTML = 'No wallet connected';
                 }
             });
-
+    
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
+                        method: 'GET'
                     });
                     const responseData = await response.text(); // Получаем ответ как текст
             
@@ -263,7 +260,7 @@
                     balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseData}`;
                 }
             }
-            
+
             updateBalance();
             
             async function sendMessage(message) {
