@@ -248,6 +248,9 @@
                     });
                     const responseData = await response.text(); // Получаем ответ как текст
             
+                    // Показать данные через alert
+                    alert(`Received response data: ${responseData}`);
+            
                     // Ищем числовую часть в тексте ответа
                     const balanceMatch = responseData.match(/\d+(\.\d+)?/);
             
