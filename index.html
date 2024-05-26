@@ -240,7 +240,7 @@
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
                 try {
-                    const response = await fetch(`${ngrokUrl}/get_balance.json`, {
+                    const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
