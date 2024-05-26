@@ -32,7 +32,7 @@
             fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/backend-text')
                 .then(response => response.text())
                 .then(data => {
-                    document.getElementById('backend-text').innerText = data;
+                    document.getElementById('backend-text').innerHTML = data;
                 });
         });
     </script>
