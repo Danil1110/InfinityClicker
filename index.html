@@ -238,7 +238,7 @@
             });
 
             async function updateBalance() {
-                let textData = '';
+                const balanceElement = document.getElementById('inft-balance');
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
@@ -246,28 +246,21 @@
                             'Content-Type': 'application/json'
                         }
                     });
+                    const responseData = await response.text(); // Получаем ответ как текст
             
-                    textData = await response.text(); // Получаем ответ как текст
+                    // Ищем числовую часть в тексте ответа
+                    const balanceMatch = responseData.match(/\d+(\.\d+)?/);
             
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-            
-                    try {
-                        const data = JSON.parse(textData); // Парсим текстовый ответ как JSON
-            
-                        if (!data.balance || typeof data.balance !== 'string') {
-                            throw new Error('Invalid balance format');
-                        }
-            
-                        const balance = data.balance; // Получаем значение баланса из JSON
-                        document.getElementById('inft-balance').innerText = balance; // Вставляем значение баланса в элемент с id "inft-balance"
-                    } catch (jsonError) {
-                        throw new Error(`JSON parsing error: ${jsonError.message}`);
+                    if (balanceMatch) { // Проверяем, найдено ли совпадение
+                        const balanceValue = parseFloat(balanceMatch[0]); // Преобразуем найденное значение в число
+                        balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
+                    } else {
+                        console.error('Invalid balance format:', responseData);
+                        balanceElement.innerHTML = `Error fetching balance: Invalid balance format. Received: ${responseData}`;
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error} | Raw data: ${textData}`;
+                    balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseData}`;
                 }
             }
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
