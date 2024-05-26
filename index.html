@@ -241,7 +241,7 @@
                 const balanceElement = document.getElementById('inft-balance');
                 let responseData;
                 try {
-                    const response = await fetch(`${ngrokUrl}/get_balance`, {
+                    const response = await fetch(`${ngrokUrl}/get_balance.json`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json' // Указываем Content-Type
