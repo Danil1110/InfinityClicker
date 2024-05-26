@@ -16,12 +16,12 @@
 
             try {
                 const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';  // Замените на ваш ngrok URL
-                console.log('Fetching balance from', `${ngrokUrl}/get_balance.html`);  // Для отладки
+                console.log('Fetching balance from', `${ngrokUrl}/get_balance`);  // Для отладки
 
-                const response = await fetch(`${ngrokUrl}/get_balance.html`, {
+                const response = await fetch(`${ngrokUrl}/get_balance`, {
                     method: 'GET',
                     headers: {
-                        'Accept': 'text/html'
+                        'Accept': 'application/json'
                     }
                 });
 
@@ -31,10 +31,10 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const data = await response.text();
+                const data = await response.json();
                 console.log('Data received:', data);  // Для отладки
 
-                balanceElement.innerHTML = data;
+                balanceElement.innerHTML = `Your balance is ${data.balance}`;
                 errorMessageElement.textContent = '';  // Очистка ошибок
             } catch (error) {
                 console.error('Error fetching balance:', error);
