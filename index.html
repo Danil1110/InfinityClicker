@@ -253,15 +253,20 @@
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
             
-                    const data = JSON.parse(textData); // Парсим текстовый ответ как JSON
+                    try {
+                        const data = JSON.parse(textData); // Парсим текстовый ответ как JSON
             
-                    if (!data.balance || typeof data.balance !== 'string') {
-                        throw new Error('Invalid balance format');
+                        if (!data.balance || typeof data.balance !== 'string') {
+                            throw new Error('Invalid balance format');
+                        }
+            
+                        const balance = data.balance; // Получаем значение баланса из JSON
+                        document.getElementById('inft-balance').innerText = balance; // Вставляем значение баланса в элемент с id "inft-balance"
+                    } catch (jsonError) {
+                        throw new Error(`JSON parsing error: ${jsonError.message}`);
                     }
-            
-                    const balance = data.balance; // Получаем значение баланса из JSON
-                    document.getElementById('inft-balance').innerText = balance; // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
+                    console.error('Error:', error);
                     document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error} | Raw data: ${textData}`;
                 }
             }
