@@ -326,7 +326,10 @@
         async function fetchData() {
             try {
                 const response = await fetch(`${ngrokUrl}/get_balance.json`, {
-                    method: 'GET'
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 });
                 const data = await response.json();
                 document.getElementById('output').innerText = data.text;
