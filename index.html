@@ -239,6 +239,7 @@
 
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
+                let responseText = '';
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
@@ -247,23 +248,32 @@
                         }
                     });
             
+                    responseText = await response.text(); // Получаем ответ как текст
+            
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
             
-                    const responseData = await response.json(); // Получаем ответ как JSON
+                    // Попытка парсинга текста как JSON
+                    let responseData;
+                    try {
+                        responseData = JSON.parse(responseText);
+                    } catch (error) {
+                        throw new Error(`Error parsing JSON! Response text: ${responseText}`);
+                    }
+            
                     alert(`Received response data: ${JSON.stringify(responseData)}`);
             
                     // Проверяем формат данных
                     if (!responseData.balance || typeof responseData.balance !== 'string') {
-                        throw new Error('Invalid balance format');
+                        throw new Error(`Invalid balance format. Response data: ${JSON.stringify(responseData)}`);
                     }
             
                     const balanceValue = responseData.balance;
                     balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
-                    balanceElement.innerHTML = `Error fetching balance: ${error.message}`;
+                    balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseText}`;
                 }
             }
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
