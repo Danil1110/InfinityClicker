@@ -254,13 +254,14 @@
                     const jsonResponse = await response.json(); // Теперь парсим ответ как JSON
             
                     if (!jsonResponse.hasOwnProperty('balance') || typeof jsonResponse.balance !== 'string') {
-                        throw new Error(`Invalid balance format. Response data: ${JSON.stringify(jsonResponse)}`);
+                        throw new Error(`$INFT Balance: The string did not match the expected pattern. Response data: ${JSON.stringify(jsonResponse)}`);
                     }
             
                     const balanceValue = jsonResponse.balance;
                     balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
+                    alert(`Error fetching balance: ${error.message}. Response data: ${error.responseData}`);
                     balanceElement.innerHTML = `Error fetching balance: ${error.message}`;
                 }
             }
