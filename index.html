@@ -246,23 +246,21 @@
                             'Content-Type': 'application/json'
                         }
                     });
+                    const responseData = await response.text(); // Получаем ответ как текст
             
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                    // Ищем числовую часть в тексте ответа
+                    const balanceMatch = responseData.match(/\d+(\.\d+)?/);
+            
+                    if (balanceMatch) { // Проверяем, найдено ли совпадение
+                        const balanceValue = parseFloat(balanceMatch[0]); // Преобразуем найденное значение в число
+                        balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
+                    } else {
+                        console.error('Invalid balance format:', responseData);
+                        balanceElement.innerHTML = `Error fetching balance: Invalid balance format. Received: ${responseData}`;
                     }
-            
-                    const jsonResponse = await response.json(); // Парсим ответ как JSON
-            
-                    if (!jsonResponse.hasOwnProperty('balance') || typeof jsonResponse.balance !== 'string') {
-                        throw new Error(`$INFT Balance: The string did not match the expected pattern. Response data: ${JSON.stringify(jsonResponse)}`);
-                    }
-            
-                    const balanceValue = jsonResponse.balance;
-                    balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
-                    alert(`Error loading balance: ${error.message}. Response data: ${JSON.stringify(jsonResponse)}`);
-                    balanceElement.innerHTML = `Error loading balance: ${error.message}`;
+                    balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseData}`;
                 }
             }
             
