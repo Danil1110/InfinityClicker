@@ -238,6 +238,7 @@
             });
 
             async function updateBalance() {
+                let textData = '';
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
@@ -246,15 +247,13 @@
                         }
                     });
             
-                    const textData = await response.text(); // Получаем ответ как текст
-                    console.log('Raw Data:', textData); // Выводим текстовый ответ в консоль для отладки
+                    textData = await response.text(); // Получаем ответ как текст
             
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
             
                     const data = JSON.parse(textData); // Парсим текстовый ответ как JSON
-                    console.log('Parsed Data:', data); // Выводим объект данных в консоль для отладки
             
                     if (!data.balance || typeof data.balance !== 'string') {
                         throw new Error('Invalid balance format');
@@ -263,7 +262,6 @@
                     const balance = data.balance; // Получаем значение баланса из JSON
                     document.getElementById('inft-balance').innerText = balance; // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
-                    console.error('Error:', error);
                     document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error} | Raw data: ${textData}`;
                 }
             }
