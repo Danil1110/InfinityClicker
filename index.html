@@ -258,7 +258,7 @@
                     }
                      
                     const balance = data.balance; // Получаем значение баланса из JSON
-                    alert(`Data: ${Data}`);
+                    alert(`Data: ${data}`);
                     //alert(`Balance: ${balance}`); // Выводим значение баланса
                     document.getElementById('inft-balance').innerText = balance; // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
@@ -266,7 +266,8 @@
                     
                     // alert(`Balance: ${balance}`);
                     // alert(`Error loading balance: ${error.message || error}`);
-                    document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error}`;
+                    // document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error}`;
+                    document.getElementById('inft-balance').innerText = data;
                 }
             }
 
