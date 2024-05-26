@@ -325,7 +325,9 @@
         const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
         async function fetchData() {
             try {
-                const response = await fetch(`${ngrokUrl}/get_balance.json`);
+                const response = await fetch(`${ngrokUrl}/get_balance.json`, {
+                    method: 'GET'
+                });
                 const data = await response.json();
                 document.getElementById('output').innerText = data.text;
             } catch (error) {
