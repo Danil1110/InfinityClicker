@@ -34,6 +34,10 @@
                 const data = await response.json();
                 console.log('Data received:', data);  // Для отладки
 
+                if (!data || !data.balance) {
+                    throw new Error('Received data is empty or missing balance');
+                }
+
                 balanceElement.innerHTML = `Your balance is ${data.balance}`;
                 errorMessageElement.textContent = '';  // Очистка ошибок
             } catch (error) {
@@ -51,6 +55,8 @@
     </script>
 </body>
 </html>
+
+
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
