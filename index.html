@@ -245,24 +245,26 @@
                             'Content-Type': 'application/json'
                         }
                     });
-
+            
+                    const textData = await response.text(); // Получаем ответ как текст
+                    console.log('Raw Data:', textData); // Выводим текстовый ответ в консоль для отладки
+            
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-
-                    const data = await response.json(); // Получаем JSON данные из ответа
-                    console.log('Data:', data); // Выводим объект данных в консоль для отладки
-
+            
+                    const data = JSON.parse(textData); // Парсим текстовый ответ как JSON
+                    console.log('Parsed Data:', data); // Выводим объект данных в консоль для отладки
+            
                     if (!data.balance || typeof data.balance !== 'string') {
                         throw new Error('Invalid balance format');
                     }
-
+            
                     const balance = data.balance; // Получаем значение баланса из JSON
-                    alert(`Data: ${JSON.stringify(data)}`);
                     document.getElementById('inft-balance').innerText = balance; // Вставляем значение баланса в элемент с id "inft-balance"
                 } catch (error) {
                     console.error('Error:', error);
-                    document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error}`;
+                    document.getElementById('inft-balance').innerText = `Error loading balance: ${error.message || error} | Raw data: ${textData}`;
                 }
             }
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
