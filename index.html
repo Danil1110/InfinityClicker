@@ -239,22 +239,41 @@
     
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
-                let responseData;
+                let responseText = '';
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance.json`, {
                         method: 'GET',
                         headers: {
-                            'Content-Type': 'application/json' // Указываем Content-Type
+                            'Content-Type': 'application/json'
                         }
                     });
-                    responseData = await response.json();
-                    const balanceValue = responseData.balance;
-                    balanceElement.innerText = balanceValue.toFixed(2);
+            
+                    responseText = await response.text(); // Получаем ответ как текст
+            
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+            
+                    // Проверка на то, что ответ является JSON
+                    try {
+                        const jsonResponse = JSON.parse(responseText);
+                        alert(`Received response data: ${JSON.stringify(jsonResponse)}`);
+            
+                        if (!jsonResponse.balance || typeof jsonResponse.balance !== 'string') {
+                            throw new Error(`Invalid balance format. Response data: ${JSON.stringify(jsonResponse)}`);
+                        }
+            
+                        const balanceValue = jsonResponse.balance;
+                        balanceElement.innerText = balanceValue; // Отображаем баланс
+                    } catch (error) {
+                        throw new Error(`Error parsing JSON! Response text: ${responseText}`);
+                    }
                 } catch (error) {
                     console.error('Error:', error);
-                    balanceElement.innerHTML = `Error fetching balance: ${error.message}.`;
+                    alert(`Error fetching balance: ${error.message}. Received: ${responseText}`);
+                    balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseText}`;
                 }
-            }
+            } 
 
             updateBalance();
             
