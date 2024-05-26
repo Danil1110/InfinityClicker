@@ -273,9 +273,11 @@
                     balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
+                    alert(`Error fetching balance: ${error.message}. Received: ${responseText}`);
                     balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseText}`;
                 }
             }
+
             // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
             updateBalance();
             
