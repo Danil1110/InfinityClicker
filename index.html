@@ -5,27 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome Page</title>
 </head>
-<body>
-    <h2 id="welcome-text">Loading...</h2>
-    <script>
-        fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/login')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(text => {
-                document.getElementById('welcome-text').innerText = text;
-            })
-            .catch(error => {
-                console.error('Error fetching welcome text:', error);
-                document.getElementById('welcome-text').innerText = 'Error loading welcome text';
-            });
-    </script>
+<body class="h-full" id="ngrok">
+<div id="root" class="h-full"></div>
+<script>
+    fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/login')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(text => {
+            document.getElementById('root').innerHTML = text;
+        })
+        .catch(error => {
+            console.error('Error fetching welcome text:', error);
+            document.getElementById('root').innerHTML = 'Error loading welcome text';
+        });
+</script>
 </body>
 </html>
-
 
 <!-- <!DOCTYPE html>
 <html lang="en">
