@@ -245,18 +245,18 @@
                             'Content-Type': 'application/json'
                         }
                     });
-            
+
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-            
+
                     const data = await response.json(); // Получаем JSON данные из ответа
                     console.log('Data:', data); // Выводим объект данных в консоль для отладки
-            
+
                     if (!data.balance || typeof data.balance !== 'string') {
                         throw new Error('Invalid balance format');
                     }
-            
+
                     const balance = data.balance; // Получаем значение баланса из JSON
                     alert(`Data: ${JSON.stringify(data)}`);
                     document.getElementById('inft-balance').innerText = balance; // Вставляем значение баланса в элемент с id "inft-balance"
