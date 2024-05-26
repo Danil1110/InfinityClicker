@@ -2,6 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Balance Update</title>
+</head>
+<body>
+    <h1 id="error-message"></h1>
+    <div id="inft-balance">Loading...</div>
+
+    <script>
+        async function updateBalance() {
+            const balanceElement = document.getElementById('inft-balance');
+            const errorMessageElement = document.getElementById('error-message');
+            try {
+                const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
+                const response = await fetch(`${ngrokUrl}/get_balance`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                balanceElement.textContent = data.balance;
+                errorMessageElement.textContent = '';  // Очистка ошибок
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+                errorMessageElement.textContent = `Error: ${error.message}`;
+                balanceElement.textContent = 'Error fetching balance';
+            }
+        }
+
+        updateBalance();
+    </script>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Telegram WebApp</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -239,40 +277,7 @@
     
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
-                let responseText = '';
-                try {
-                    const response = await fetch(`${ngrokUrl}/get_balance`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-            
-                    responseText = await response.text(); // Получаем ответ как текст
-            
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-            
-                    // Проверка на то, что ответ является JSON
-                    try {
-                        const jsonResponse = JSON.parse(responseText);
-                        alert(`Received response data: ${JSON.stringify(jsonResponse)}`);
-            
-                        if (!jsonResponse.balance || typeof jsonResponse.balance !== 'string') {
-                            throw new Error(`Invalid balance format. Response data: ${JSON.stringify(jsonResponse)}`);
-                        }
-            
-                        const balanceValue = jsonResponse.balance;
-                        balanceElement.innerText = balanceValue; // Отображаем баланс
-                    } catch (error) {
-                        throw new Error(`Error parsing JSON! Response text: ${responseText}`);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert(`Error fetching balance: ${error.message}. Received: ${responseText}`);
-                    balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseText}`;
-                }
+                
             }
 
 
@@ -324,6 +329,8 @@
     </script>
 </body>
 </html> 
+ -->
+
 
 <!-- <!DOCTYPE html>
 <html lang="en">
