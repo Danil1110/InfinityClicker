@@ -1,37 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Text Page</title>
-</head>
-<body>
-    <div id="text"></div>
-    <script>
-        // Функция для получения текста с сервера
-        async function getText() {
-            try {
-                // Отправляем GET-запрос на сервер
-                const response = await fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/text.html');
-
-                // Проверяем, успешен ли запрос
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                // Получаем текст ответа
-                const text = await response.text();
-
-                // Вставляем текст на страницу
-                document.getElementById("text").innerHTML = text;
-            } catch (error) {
-                console.error('Error:', error);
-            }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пример сайта с бэкендом Flask</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
         }
 
-        // Вызываем функцию для получения текста
-        getText();
+        h1 {
+            color: #333;
+        }
+
+        #backend-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Текст с бэкенда:</h1>
+        <div id="backend-text"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/backend-text')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('backend-text').innerText = data;
+                });
+        });
     </script>
 </body>
 </html>
+
+
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
