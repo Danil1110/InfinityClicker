@@ -254,31 +254,27 @@
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
             
-                    // Попытка парсинга текста как JSON
-                    let responseData;
+                    // Проверка на то, что ответ является JSON
                     try {
-                        responseData = JSON.parse(responseText);
+                        const jsonResponse = JSON.parse(responseText);
+                        alert(`Received response data: ${JSON.stringify(jsonResponse)}`);
+            
+                        if (!jsonResponse.balance || typeof jsonResponse.balance !== 'string') {
+                            throw new Error(`Invalid balance format. Response data: ${JSON.stringify(jsonResponse)}`);
+                        }
+            
+                        const balanceValue = jsonResponse.balance;
+                        balanceElement.innerText = balanceValue; // Отображаем баланс
                     } catch (error) {
                         throw new Error(`Error parsing JSON! Response text: ${responseText}`);
                     }
-            
-                    alert(`Received response data: ${JSON.stringify(responseData)}`);
-            
-                    // Проверяем формат данных
-                    if (!responseData.balance || typeof responseData.balance !== 'string') {
-                        throw new Error(`Invalid balance format. Response data: ${JSON.stringify(responseData)}`);
-                    }
-            
-                    const balanceValue = responseData.balance;
-                    balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
                     alert(`Error fetching balance: ${error.message}. Received: ${responseText}`);
                     balanceElement.innerHTML = `Error fetching balance: ${error.message}. Received: ${responseText}`;
                 }
-            }
-
-            // Вызовите эту функцию при загрузке страницы или когда необходимо обновить баланс
+            } 
+            
             updateBalance();
             
             async function sendMessage(message) {
