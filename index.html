@@ -12,16 +12,30 @@
         async function updateBalance() {
             const balanceElement = document.getElementById('inft-balance');
             const errorMessageElement = document.getElementById('error-message');
+            console.log('updateBalance called');  // Для отладки
+
             try {
                 const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';  // Замените на ваш ngrok URL
-                const response = await fetch(`${ngrokUrl}/get_balance.json`);
+                const response = await fetch(`${ngrokUrl}/get_balance.json`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                console.log('Response received');  // Для отладки
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
+
                 const data = await response.json();
+                console.log('Data parsed', data);  // Для отладки
+
                 if (data.error) {
                     throw new Error(data.error);
                 }
+
                 balanceElement.textContent = data.balance;
                 errorMessageElement.textContent = '';  // Очистка ошибок
             } catch (error) {
