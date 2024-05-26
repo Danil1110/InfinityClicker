@@ -251,7 +251,7 @@
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
             
-                    const jsonResponse = await response.json(); // Теперь парсим ответ как JSON
+                    const jsonResponse = await response.json(); // Парсим ответ как JSON
             
                     if (!jsonResponse.hasOwnProperty('balance') || typeof jsonResponse.balance !== 'string') {
                         throw new Error(`$INFT Balance: The string did not match the expected pattern. Response data: ${JSON.stringify(jsonResponse)}`);
@@ -261,8 +261,8 @@
                     balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
-                    alert(`Error fetching balance: ${error.message}. Response data: ${error.responseData}`);
-                    balanceElement.innerHTML = `Error fetching balance: ${error.message}`;
+                    alert(`Error loading balance: ${error.message}. Response data: ${error.responseData}`);
+                    balanceElement.innerHTML = `Error loading balance: ${error.message}`;
                 }
             }
             
