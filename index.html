@@ -239,19 +239,23 @@
     
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
-                let responseData; // Объявляем переменную responseData перед try-catch блоком
+                let responseData;
                 try {
                     const response = await fetch(`${ngrokUrl}/get_balance`, {
-                        method: 'GET' // Указываем метод GET
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json' // Указываем Content-Type
+                        }
                     });
-                    responseData = await response.json(); // Получаем ответ как JSON объект
-                    const balanceValue = responseData.balance; // Извлекаем баланс из JSON объекта
-                    balanceElement.innerText = balanceValue.toFixed(2); // Отображаем баланс с двумя знаками после запятой
+                    responseData = await response.json();
+                    const balanceValue = responseData.balance;
+                    balanceElement.innerText = balanceValue.toFixed(2);
                 } catch (error) {
                     console.error('Error:', error);
                     balanceElement.innerHTML = `Error fetching balance: ${error.message}.`;
                 }
             }
+
             updateBalance();
             
             async function sendMessage(message) {
