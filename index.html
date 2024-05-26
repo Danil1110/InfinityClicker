@@ -3,40 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preload" href="https://cdn.ngrok.com/static/fonts/euclid-square/EuclidSquare-RegularItalic-WebS.woff" as="font" type="font/woff" crossorigin="anonymous" />
-    <title>Пример сайта с бэкендом Flask</title>
-    <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        #backend-text {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #666;
-        }
-    </style>
+    <title>Login Form</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Текст с бэкенда:</h1>
-        <div id="backend-text"></div>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/backend-text')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('backend-text').innerHTML = data;
-                });
-        });
-    </script>
+    <h2>Login Form</h2>
+    <form action="https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/login" method="get">
+        <label for="vm">Enter Name:</label><br>
+        <input type="text" id="vm" name="vm"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <!-- You can add any additional HTML elements here to customize your webpage -->
 </body>
 </html>
 
