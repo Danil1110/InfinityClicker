@@ -6,17 +6,11 @@
 <body>
     <div id="text"></div>
     <script>
-        // Функция для получения текста с ngrok URL
+        // Функция для получения текста с сервера
         async function getText() {
             try {
-                // Ссылка на ngrok
-                var ngrokUrl = "https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/";
-
-                // Добавляем путь к странице text.html
-                var textUrl = ngrokUrl + "text.html";
-
-                // Получаем данные с ngrok URL
-                const response = await fetch(textUrl);
+                // Отправляем GET-запрос на сервер
+                const response = await fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/text.html');
 
                 // Проверяем, успешен ли запрос
                 if (!response.ok) {
@@ -38,8 +32,6 @@
     </script>
 </body>
 </html>
-
-
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
