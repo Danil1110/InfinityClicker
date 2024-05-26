@@ -326,7 +326,12 @@
 
         async function fetchData() {
             try {
-                const response = await fetch(`${ngrokUrl}/get_balance`);
+                const response = await fetch(`${ngrokUrl}/get_balance`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -351,7 +356,6 @@
     <h2 id="error" style="color: red;"></h2>
 </body>
 </html>
-
 
 <!-- <!DOCTYPE html>
 <html lang="en">
