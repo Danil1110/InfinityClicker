@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form</title>
+    <title>Welcome Page</title>
 </head>
 <body>
-    <h2>Login Form</h2>
-    <form action="https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/login" method="get">
-        <label for="vm">Enter Name:</label><br>
-        <input type="text" id="vm" name="vm"><br><br>
-        <input type="submit" value="Submit">
-    </form>
-    <!-- You can add any additional HTML elements here to customize your webpage -->
+    <h2 id="welcome-text">Loading...</h2>
+    <script>
+        fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/login')
+            .then(response => response.text())
+            .then(text => {
+                document.getElementById('welcome-text').innerText = text;
+            })
+            .catch(error => {
+                console.error('Error fetching welcome text:', error);
+                document.getElementById('welcome-text').innerText = 'Error loading welcome text';
+            });
+    </script>
 </body>
 </html>
 
