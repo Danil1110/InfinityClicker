@@ -239,37 +239,22 @@
             });
     
             async function updateBalance() {
-                const balanceElement = document.getElementById('inft-balance');
                 try {
-                    const response = await fetch(`${ngrokUrl}/get_balance`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-            
+                    const response = await fetch('http://127.0.0.1:5000/get_balance');
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error('Network response was not ok ' + response.statusText);
                     }
-            
-                    const jsonResponse = await response.json(); // Парсим ответ как JSON
-                    alert(JSON.stringify(jsonResponse)); // Показываем содержимое ответа в виде диалогового окна
-            
-                    if (!jsonResponse.hasOwnProperty('balance')) {
-                        throw new Error(`$INFT Balance: Missing balance property. Response data: ${JSON.stringify(jsonResponse)}`);
+                    const contentType = response.headers.get("content-type");
+                    if (!contentType || !contentType.includes("application/json")) {
+                        throw new TypeError("Received response is not JSON");
                     }
-            
-                    const balanceValue = jsonResponse.balance;
-                    balanceElement.innerText = balanceValue; // Отображаем баланс
+                    const data = await response.json();
+                    document.getElementById('inft-balance').innerText = `${data.balance}`;
                 } catch (error) {
-                    console.error('Error:', error);
-                    const responseData = await error.response.text(); // Получаем текст ответа
-                    alert(`Error loading balance: ${error.message}. Response data: ${responseData}`);
-                    balanceElement.innerHTML = `Error loading balance: ${error.message}`;
+                    document.getElementById('error-text').innerText = `${error.message}`;
                 }
             }
- 
-
+    
             updateBalance();
             
             async function sendMessage(message) {
