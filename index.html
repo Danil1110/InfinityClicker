@@ -16,7 +16,7 @@
             align-items: center;
             height: 100vh;
             position: relative;
-            background: radial-gradient(circle at center calc(10% - 10px), black 75%, purple 100%);
+            background: radial-gradient(circle at center calc(10% - 10px), white 75%, purple 100%);
             overflow: hidden;
         }
         .container {
@@ -137,8 +137,9 @@
         <p>$INFT Price: ~ $0.00</p>
     </div>
     <div class="rounded-inft-balance">
-        <h1 id="inft-balance">$INFT Balance: 0.00*</h1>
+        <p id="inft-balance">$INFT Balance: 0.00*</p>
     </div>
+    <h1 id="smth">smth</h1>
     <div id="wallet-info"></div>
     <div id="not-supported">
         <h1>Access Denied</h1>
@@ -148,8 +149,6 @@
         function isMobileDevice() {
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
-
-        
 
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
@@ -249,7 +248,7 @@
                         throw new TypeError("Received response is not JSON");
                     }
                     const data = await response.json();
-                    document.getElementById('inft-balance').innerHTML = `${data.balance}`;
+                    document.getElementById('smth').innerHTML = `${data.balance}`;
                 } catch (error) {
                     document.getElementById('error-text').innerTHTML = `${error.message}`;
                 }
