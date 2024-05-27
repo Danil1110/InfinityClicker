@@ -249,7 +249,7 @@
                     const data = await response.json();
                     document.getElementById('inft-balance').innerHTML = `$INFT Balance: ${data.balance}`;
                 } catch (error) {
-                    document.getElementById('error-text').innerTHTML = `${error.message}`;
+                    document.getElementById('inft-balance').innerTHTML = `${error.message}`;
                 }
             }
 
