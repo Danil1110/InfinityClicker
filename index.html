@@ -14,10 +14,14 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new TypeError("Received response is not JSON");
+                }
                 const data = await response.json();
                 document.getElementById('server-text').innerText = data.text;
             } catch (error) {
-                console.error('Fetch error: ', error);
+                console.error('Fetch error:', error);
                 document.getElementById('server-text').innerText = 'Ошибка загрузки текста с сервера';
             }
         }
@@ -26,6 +30,7 @@
     </script>
 </body>
 </html>
+
 
 <!-- <!DOCTYPE html>
 <html lang="en">
