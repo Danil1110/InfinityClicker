@@ -150,7 +150,11 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        async function updateBalance() {
+        
+        
+        document.addEventListener('DOMContentLoaded', function () {
+
+            async function updateBalance() {
                 try {
                     const response = await fetch('http://127.0.0.1:5000/get_balance');
                     if (!response.ok) {
@@ -167,9 +171,8 @@
                 }
             }
 
-        updateBalance();
-        
-        document.addEventListener('DOMContentLoaded', function () {
+            updateBalance();
+            
             const tg = window.Telegram.WebApp;
             tg.ready();
 
