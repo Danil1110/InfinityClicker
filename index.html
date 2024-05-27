@@ -241,7 +241,7 @@
             async function updateBalance() {
                 const balanceElement = document.getElementById('inft-balance');
                 try {
-                    const response = await fetch(`${ngrokUrlLocal}/get_balance`, {
+                    const response = await fetch(`${ngrokUrl}/get_balance`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
@@ -254,19 +254,19 @@
             
                     const jsonResponse = await response.json(); // Парсим ответ как JSON
             
-                    if (!jsonResponse.hasOwnProperty('balance') || typeof jsonResponse.balance !== 'string') {
-                        throw new Error(`$INFT Balance: The string did not match the expected pattern. Response data: ${JSON.stringify(jsonResponse)}`);
+                    if (!jsonResponse.hasOwnProperty('balance')) {
+                        throw new Error(`$INFT Balance: Missing balance property. Response data: ${JSON.stringify(jsonResponse)}`);
                     }
             
                     const balanceValue = jsonResponse.balance;
                     balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
-                    alert(`Error loading balance: ${error.message}.`); // Используем error.message
+                    const responseData = await error.response.text(); // Получаем текст ответа
+                    alert(`Error loading balance: ${error.message}. Response data: ${responseData}`);
                     balanceElement.innerHTML = `Error loading balance: ${error.message}`;
                 }
-            }
-                        
+            }      
 
             updateBalance();
             
