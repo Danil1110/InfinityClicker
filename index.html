@@ -6,10 +6,124 @@
     <title>Telegram WebApp</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    
+    <style>
+        body {
+            font-family: Cascadia Mono, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            background: radial-gradient(circle at center calc(10% - 10px), white 75%, purple 100%);
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #000000;
+            font-weight: bold;
+        }
+        p {
+            margin: 10px 0;
+            color: #000000;
+            font-weight: bold;
+        }
+        #not-supported {
+            display: none;
+            color: white;
+            background-color: black;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #not-supported > p {
+            margin: 10px 0;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+        #not-supported > h1 {
+            margin-bottom: 20px;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+        #ton-connect {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            transform: translate(0%, 12%); /* Center element horizontally */
+        }
+        #wallet-info {
+            margin-top: 20px;
+            color: #000000;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        @media (max-width: 600px) {
+            .container, #not-supported {
+                width: 90%;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            p {
+                font-size: 1em;
+            }
+        }
+        #send-message-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .rounded-inft-price, .rounded-inft-balance {
+            width: 247px;
+            height: 45px;
+            background: linear-gradient(to right, pink, purple); /* Gradient background */
+            border: 2px solid black;
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            left: 50%; /* Center horizontally */
+            transform: translate(-85%, -50%); /* Center horizontally and adjust vertically */
+            color: white; /* White text color */
+            font-weight: bold; /* Bold text */
+        }
+        .rounded-inft-price {
+            top: 47px;
+        }
+        .rounded-inft-balance {
+            top: 103px;
+        }
+
+        .rounded-inft-price>p, .rounded-inft-balance>p {
+            background: linear-gradient(black, purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+    </style>
 </head>
 <body>
-    <h1 id="smth">smth</h1>
     <div id="ton-connect"></div>
     <div class="container" id="app-container">
         <h1>Welcome to Telegram WebApp</h1>
@@ -133,7 +247,7 @@
                         throw new TypeError("Received response is not JSON");
                     }
                     const data = await response.json();
-                    document.getElementById('smth').innerHTML = `${data.balance}`;
+                    document.getElementById('inft-balance').innerHTML = `$INFT Balance: ${data.balance}`;
                 } catch (error) {
                     document.getElementById('error-text').innerTHTML = `${error.message}`;
                 }
