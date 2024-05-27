@@ -172,6 +172,7 @@
 
             const botToken = 'YOUR_TELEGRAM_API_TOKEN';
             const ngrokUrl = 'https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app';
+            const ngrokUrllocal = 'http://127.0.0.1:5000';
 
             const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: 'https://danil1110.github.io/InfinityClicker/tonconnect-manifest.json',
@@ -238,32 +239,31 @@
             });
     
             async function updateBalance() {
+                const balanceElement = document.getElementById('inft-balance');
                 try {
-                    const headers = new Headers();
-                    headers.append('Content-Type', 'application/json'); // Добавляем нужные заголовки
-                    
-                    const options = {
+                    const response = await fetch(`${ngrokUrlLocal}/get_balance`, {
                         method: 'GET',
-                        headers: headers // Передаем объект Headers с заголовками
-                    };
-                    
-                    const response = await fetch('http://127.0.0.1:5000/get_balance', options);
-                    
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+            
                     if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    
-                    const contentType = response.headers.get("content-type");
-                    if (!contentType || !contentType.includes("application/json")) {
-                        throw new TypeError("Received response is not JSON");
+            
+                    const jsonResponse = await response.json(); // Парсим ответ как JSON
+            
+                    if (!jsonResponse.hasOwnProperty('balance') || typeof jsonResponse.balance !== 'string') {
+                        throw new Error(`$INFT Balance: The string did not match the expected pattern. Response data: ${JSON.stringify(jsonResponse)}`);
                     }
-                    
-                    const data = await response.json();
-                    const balance = data.balance;
-                    const balanceElement = document.getElementById('inft-balance');
-                    balanceElement.innerText = balance;
+            
+                    const balanceValue = jsonResponse.balance;
+                    balanceElement.innerText = balanceValue; // Отображаем баланс
                 } catch (error) {
                     console.error('Error:', error);
+                    alert(`Error loading balance: ${error.message}. Response data: ${error.responseData}`);
+                    balanceElement.innerHTML = `Error loading balance: ${error.message}`;
                 }
             }
             
