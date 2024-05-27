@@ -2,6 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask to GitHub Pages</title>
+</head>
+<body>
+    <h1 id="inft-balance">Баланс: Текст будет здесь</h1>
+    <h2 id="error-text" style="color: red;"></h2> <!-- Для отображения ошибок -->
+    <script>
+        async function updateBalance() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/get_balance');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new TypeError("Received response is not JSON");
+                }
+                const data = await response.json();
+                document.getElementById('inft-balance').innerText = `${data.balance}`;
+            } catch (error) {
+                document.getElementById('error-text').innerText = `${error.message}`;
+            }
+        }
+
+        updateBalance();
+    </script>
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Telegram WebApp</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -302,7 +336,7 @@
                 
     </script>
 </body>
-</html> 
+</html>  -->
 
 
 <!-- <!DOCTYPE html>
