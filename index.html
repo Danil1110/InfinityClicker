@@ -11,7 +11,7 @@
     <script>
         async function fetchText() {
             try {
-                const response = await fetch('https://95bf-2a03-f680-fe04-51ed-69d8-fcc7-6be6-fa4a.ngrok-free.app/get-text');
+                const response = await fetch('http://127.0.0.1:5000/get-text');
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
