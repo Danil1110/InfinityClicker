@@ -154,7 +154,7 @@
         document.addEventListener('DOMContentLoaded', async function () {
             async function updateBalance() {
                 try {
-                    const response = await fetch('/get_balance'); // Use relative URL
+                    const response = await fetch('http://127.0.0.1:5000/get_balance'); // Use relative URL
                     if (!response.ok) {
                         throw new Error('Сетевой ответ не был успешным ' + response.statusText);
                     }
