@@ -249,12 +249,13 @@
                         throw new TypeError("Received response is not JSON");
                     }
                     const data = await response.json();
-                    document.getElementById('inft-balance').innerText = `$INFT Balance: ${data.balance}`;
+                    document.getElementById('inft-balance').innerHTML = `${data.balance}`;
                 } catch (error) {
-                    document.getElementById('error-text').innerText = `${error.message}`;
+                    document.getElementById('error-text').innerTHTML = `${error.message}`;
                 }
             }
-    
+
+                        
             updateBalance();
             
             async function sendMessage(message) {
