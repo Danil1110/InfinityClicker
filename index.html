@@ -136,7 +136,7 @@
         <p>$INFT Price: ~ $0.00</p>
         </div>
         <div class="rounded-inft-balance">
-            <p id="inft-balance">$INFT Balance: 0.00*</p>
+            <p id="inft-balance">$INFT Balance: 0.00</p>
         </div>
         <div id="wallet-info"></div>
     </div>
@@ -150,6 +150,25 @@
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
+        async function updateBalance() {
+                try {
+                    const response = await fetch('http://127.0.0.1:5000/get_balance');
+                    if (!response.ok) {
+                        throw new Error('Сетевой ответ не был успешным ' + response.statusText);
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (!contentType || !contentType.includes("application/json")) {
+                        throw new TypeError("Полученный ответ не является JSON");
+                    }
+                    const data = await response.json();
+                    document.querySelector('.rounded-inft-balance #inft-balance').innerText = `$INFT Balance: ${data.balance}`;
+                } catch (error) {
+                    document.querySelector('.rounded-inft-balance #inft-balance').innerText = `${error.message}`;
+                }
+            }
+
+            updateBalance();
+        
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
             tg.ready();
@@ -236,27 +255,7 @@
                     document.getElementById('wallet-info').innerHTML = 'No wallet connected';
                 }
             });
-    
-            async function updateBalance() {
-                try {
-                    const response = await fetch('http://127.0.0.1:5000/get_balance');
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    const contentType = response.headers.get("content-type");
-                    if (!contentType || !contentType.includes("application/json")) {
-                        throw new TypeError("Received response is not JSON");
-                    }
-                    const data = await response.json();
-                    document.getElementById('inft-balance').innerHTML = `$INFT Balance: ${data.balance}`;
-                } catch (error) {
-                    document.getElementById('inft-balance').innerTHTML = `${error.message}`;
-                }
-            }
-
-                        
-            updateBalance();
-            
+                
             async function sendMessage(message) {
                 try {
                     const response = await fetch(`${ngrokUrl}/send_test_msg`, {
