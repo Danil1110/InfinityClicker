@@ -147,17 +147,14 @@
     </div>
     <script>
         
-
-        
-        
-        document.addEventListener('DOMContentLoaded', function () {
-            function isMobileDevice() {
+        function isMobileDevice() {
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
             }
-            
+
+        document.addEventListener('DOMContentLoaded', async function () {
             async function updateBalance() {
                 try {
-                    const response = await fetch('http://127.0.0.1:5000/get_balance');
+                    const response = await fetch('/get_balance'); // Use relative URL
                     if (!response.ok) {
                         throw new Error('Сетевой ответ не был успешным ' + response.statusText);
                     }
@@ -169,9 +166,9 @@
                     document.querySelector('.rounded-inft-balance #inft-balance').innerText = `$INFT Balance: ${data.balance}`;
                 } catch (error) {
                     document.querySelector('.rounded-inft-balance #inft-balance').innerText = `${error.message}`;
-                }
+                    }
             }
-
+    
             updateBalance();
             
             const tg = window.Telegram.WebApp;
