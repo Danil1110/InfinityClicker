@@ -146,14 +146,15 @@
         <p>This WebApp is only accessible on mobile devices (iOS/Android) and through the Telegram app.</p>
     </div>
     <script>
-        function isMobileDevice() {
-            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        }
+        
 
         
         
         document.addEventListener('DOMContentLoaded', function () {
-
+            function isMobileDevice() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            }
+            
             async function updateBalance() {
                 try {
                     const response = await fetch('http://127.0.0.1:5000/get_balance');
